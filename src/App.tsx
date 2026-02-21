@@ -1,16 +1,9 @@
-import { useState } from 'react'
-
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <main>
-      <h1>STalk Front</h1>
-      <button onClick={() => setCount((value) => value + 1)}>
-        count is {count}
-      </button>
-    </main>
-  )
+    <>
+      <h1>Vite + React</h1>
+    </>
+  );
 }
 
-export default App
+export default App;
