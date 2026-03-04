@@ -24,7 +24,6 @@
   },
   "include": [
     "vite.config.ts",
-    "tailwind.config.ts",
-    "tailwindcss-preset-px-to-rem.d.ts"
+    "tailwind.config.ts"
   ]
 }
