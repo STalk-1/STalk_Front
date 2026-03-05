@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import './fonts.css';
 @import './colors.css';
+@import './twUtills.css';
 
 body {
   font-family: var(--font-sans);
