@@ -1,0 +1,9 @@
+const HEADER_NAV_TEXTS = {
+  REAL_TIME_CHART: '실시간 차트',
+  INTEREST_STOCKS: '관심 종목',
+};
+const HEADER_ACTION_TEXTS = {
+  LOGIN: '로그인',
+};
+
+export { HEADER_ACTION_TEXTS, HEADER_NAV_TEXTS };
