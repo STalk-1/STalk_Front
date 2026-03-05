@@ -1,10 +1,18 @@
+import { Outlet } from 'react-router-dom';
+
 import Header from '@/components/layout/MainHeader';
+import TabBar from '@/components/layout/TabBar';
 
 function MainLayout() {
   return (
     <>
       <Header />
-      <main>{/* 페이지 콘텐츠가 렌더링될 영역 */}</main>
+      <main className="bg-bg min-h-screen w-full">
+        <section className="layout-content w-full px-5">
+          <TabBar />
+          <Outlet />
+        </section>
+      </main>
     </>
   );
 }
