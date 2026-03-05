@@ -1,5 +1,8 @@
 import { Logo } from '@/assets/images';
 
+import { HEADER_NAV_TEXTS } from './constants';
+import LoginButton from './LoginButton';
+
 function Header() {
   return (
     <header className="border-bg h-20 w-full border-b bg-white">
@@ -13,18 +16,13 @@ function Header() {
         </h1>
         <ul className="flex h-full items-center gap-6">
           <li className="typo-12-medium md:typo-20-medium lg:typo-20-medium relative flex h-full items-center text-green-500 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-green-500 after:content-['']">
-            실시간 차트
+            {HEADER_NAV_TEXTS.REAL_TIME_CHART}
           </li>
           <li className="typo-12-medium text-grey-500 md:typo-20-medium lg:typo-20-medium">
-            관심 종목
+            {HEADER_NAV_TEXTS.INTEREST_STOCKS}
           </li>
         </ul>
-        <button
-          type="button"
-          className="typo-12-medium md:typo-20-medium lg:typo-20-medium ml-auto rounded-lg bg-green-500 px-5 py-2 text-white"
-        >
-          로그인
-        </button>
+        <LoginButton />
       </nav>
     </header>
   );
