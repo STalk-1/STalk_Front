@@ -2,9 +2,10 @@ import Header from '@/components/layout/Header';
 
 function MainLayout() {
   return (
-    <div>
+    <>
       <Header />
-    </div>
+      <main>{/* 페이지 콘텐츠가 렌더링될 영역 */}</main>
+    </>
   );
 }
 
