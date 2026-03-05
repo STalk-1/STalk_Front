@@ -3,7 +3,7 @@ import { Logo } from '@/assets/images';
 function Header() {
   return (
     <header className="border-bg h-20 w-full border-b bg-white">
-      <nav className="mx-auto flex h-full w-full max-w-300 items-center justify-between px-5 md:justify-start md:gap-10">
+      <nav className="mx-auto flex h-full w-full max-w-300 items-center gap-10 px-5">
         <h1>
           <Logo
             className="md:h-9 md:w-19 lg:h-9 lg:w-19"
@@ -11,8 +11,8 @@ function Header() {
             height={24}
           />
         </h1>
-        <ul className="flex items-center gap-6">
-          <li className="typo-12-medium md:typo-20-medium lg:typo-20-medium relative text-green-500 after:absolute after:-bottom-7 after:left-0 after:h-0.5 after:w-full after:bg-green-500 after:content-['']">
+        <ul className="flex h-full items-center gap-6">
+          <li className="typo-12-medium md:typo-20-medium lg:typo-20-medium relative flex h-full items-center text-green-500 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-green-500 after:content-['']">
             실시간 차트
           </li>
           <li className="typo-12-medium text-grey-500 md:typo-20-medium lg:typo-20-medium">
@@ -21,7 +21,7 @@ function Header() {
         </ul>
         <button
           type="button"
-          className="typo-12-medium md:typo-20-medium lg:typo-20-medium rounded-lg bg-green-500 px-5 py-2 text-white md:ml-auto"
+          className="typo-12-medium md:typo-20-medium lg:typo-20-medium ml-auto rounded-lg bg-green-500 px-5 py-2 text-white"
         >
           로그인
         </button>
