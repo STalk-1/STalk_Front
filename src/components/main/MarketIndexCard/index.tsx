@@ -43,7 +43,7 @@ function MarketIndexCard({
   const IndexIcon = indexIconMap[name];
 
   return (
-    <article className="w-full max-w-70 rounded-xl bg-white px-9 py-8 shadow-xl">
+    <article className="w-70 rounded-xl bg-white px-9 py-8 shadow-xl">
       <div className="mb-3 flex items-start justify-between">
         <p className="typo-16-medium text-grey-500">{name}</p>
         <IndexIcon className="mt-1 h-5 w-5" aria-hidden="true" />
