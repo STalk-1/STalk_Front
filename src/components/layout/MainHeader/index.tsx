@@ -12,8 +12,8 @@ function Header() {
           <Link to="/" aria-label="홈으로 이동">
             <Logo
               className="md:h-9 md:w-19 lg:h-9 lg:w-19"
-              width={51}
-              height={24}
+              width={60}
+              height={30}
             />
           </Link>
         </h1>
