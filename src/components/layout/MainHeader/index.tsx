@@ -6,7 +6,7 @@ import LoginButton from './LoginButton';
 
 function Header() {
   return (
-    <header className="shadow-xl h-20 w-full bg-white">
+    <header className="relative h-20 w-full bg-white shadow-xl">
       <nav className="layout-content flex h-full w-full items-center px-5">
         <h1>
           <Link to="/" aria-label="홈으로 이동">
