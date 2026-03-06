@@ -1,4 +1,4 @@
-import { HEADER_ACTION_TEXTS } from '../constants';
+import { HEADER_ACTION_TEXTS } from '@/components/layout/MainHeader/constants';
 
 function LoginButton() {
   return (
