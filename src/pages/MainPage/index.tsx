@@ -53,7 +53,7 @@ function MainPage() {
           slidesOffsetAfter={8}
         >
           {marketIndices.map((indexData) => (
-            <SwiperSlide key={indexData.name} style={{ width: 280 }}>
+            <SwiperSlide key={indexData.name} className="w-70!">
               <StockIndexCard {...indexData} />
             </SwiperSlide>
           ))}
