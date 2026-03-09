@@ -53,22 +53,92 @@ const rankingItems: RankingItemData[] = [
     changeRate: 2.13,
     direction: 'UP',
   },
+  {
+    rank: 6,
+    name: '삼성전자',
+    market: 'KOSPI',
+    symbol: '005930',
+    price: 182400,
+    change: 3800,
+    changeRate: 2.13,
+    direction: 'UP',
+  },
+  {
+    rank: 7,
+    name: '삼성전자',
+    market: 'KOSPI',
+    symbol: '005930',
+    price: 182400,
+    change: 3800,
+    changeRate: 2.13,
+    direction: 'UP',
+  },
+  {
+    rank: 8,
+    name: '삼성전자',
+    market: 'KOSPI',
+    symbol: '005930',
+    price: 182400,
+    change: 3800,
+    changeRate: 2.13,
+    direction: 'UP',
+  },
+  {
+    rank: 9,
+    name: '삼성전자',
+    market: 'KOSPI',
+    symbol: '005930',
+    price: 182400,
+    change: 3800,
+    changeRate: 2.13,
+    direction: 'UP',
+  },
+  {
+    rank: 10,
+    name: '삼성전자',
+    market: 'KOSPI',
+    symbol: '005930',
+    price: 182400,
+    change: 3800,
+    changeRate: 2.13,
+    direction: 'UP',
+  },
 ];
 
 function RankingCard() {
+  const leftRankingItems = rankingItems.slice(0, 5);
+  const rightRankingItems = rankingItems.slice(5, 10);
+
   return (
     <section className="mt-10 w-full">
       <h2 className="typo-20-regular mb-8 flex items-center gap-4 leading-none font-semibold text-black">
         <IcGraph className="h-4.5 w-4.5 text-green-500" aria-hidden="true" />
-        <span>거래량 급등 TOP 5</span>
+        <span className="lg:hidden">거래량 급등 TOP 5</span>
+        <span className="hidden lg:inline">거래량 급등 TOP 10</span>
       </h2>
 
       <article className="w-full rounded-xl bg-white px-5 py-8 shadow-xl md:px-14 md:py-12">
-        <ul className="flex flex-col gap-11">
-          {rankingItems.map((item) => (
+        <ul className="flex flex-col gap-11 lg:hidden">
+          {leftRankingItems.map((item) => (
             <RankingItem key={item.rank} item={item} />
           ))}
         </ul>
+
+        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-x-14">
+          <ul className="flex flex-col gap-11">
+            {leftRankingItems.map((item) => (
+              <RankingItem key={item.rank} item={item} />
+            ))}
+          </ul>
+
+          <div className="w-px bg-gray-100" aria-hidden="true" />
+
+          <ul className="flex flex-col gap-11">
+            {rightRankingItems.map((item) => (
+              <RankingItem key={item.rank} item={item} />
+            ))}
+          </ul>
+        </div>
       </article>
     </section>
   );
