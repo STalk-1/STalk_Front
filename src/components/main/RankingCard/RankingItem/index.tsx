@@ -7,6 +7,14 @@ type RankingItemProps = {
 };
 
 function RankingItem({ item }: RankingItemProps) {
+  const isUp = item.direction === 'UP';
+  const isDown = item.direction === 'DOWN';
+  const changeColorClass = isUp
+    ? 'text-red'
+    : isDown
+      ? 'text-blue'
+      : 'text-grey-500';
+
   return (
     <li className="grid grid-cols-[32px_1fr_auto_auto] items-center gap-x-5 md:grid-cols-[44px_1fr_auto_auto] md:gap-x-5">
       <p className="typo-24-semibold leading-none text-green-500">
@@ -20,18 +28,19 @@ function RankingItem({ item }: RankingItemProps) {
         </p>
       </div>
 
-      <p className="text-red typo-16-medium justify-self-end leading-none">
+      <p
+        className={`typo-16-medium justify-self-end leading-none ${changeColorClass}`}
+      >
         {item.price.toLocaleString('en-US')}
       </p>
 
-      <div className="text-red flex items-center gap-5 justify-self-end text-right">
-        {item.direction === 'UP' ? (
-          <IcCaretUp className="text-red h-3 w-3 shrink-0" aria-hidden="true" />
-        ) : item.direction === 'DOWN' ? (
-          <IcCaretDown
-            className="text-blue h-3 w-3 shrink-0"
-            aria-hidden="true"
-          />
+      <div
+        className={`flex items-center gap-5 justify-self-end text-right ${changeColorClass}`}
+      >
+        {isUp ? (
+          <IcCaretUp className="h-3 w-3 shrink-0" aria-hidden="true" />
+        ) : isDown ? (
+          <IcCaretDown className="h-3 w-3 shrink-0" aria-hidden="true" />
         ) : (
           <span
             className="bg-grey-300 h-2 w-2 rounded-full"
