@@ -105,6 +105,20 @@ const rankingItems: RankingItemData[] = [
   },
 ];
 
+type RankingListProps = {
+  items: RankingItemData[];
+};
+
+function RankingList({ items }: RankingListProps) {
+  return (
+    <ul className="flex flex-col gap-11">
+      {items.map((item) => (
+        <RankingItem key={item.rank} item={item} />
+      ))}
+    </ul>
+  );
+}
+
 function RankingCard() {
   const leftRankingItems = rankingItems.slice(0, 5);
   const rightRankingItems = rankingItems.slice(5, 10);
@@ -118,26 +132,16 @@ function RankingCard() {
       </h2>
 
       <article className="w-full rounded-xl bg-white px-5 py-8 shadow-xl md:px-14 md:py-12">
-        <ul className="flex flex-col gap-11 lg:hidden">
-          {leftRankingItems.map((item) => (
-            <RankingItem key={item.rank} item={item} />
-          ))}
-        </ul>
+        <div className="lg:hidden">
+          <RankingList items={leftRankingItems} />
+        </div>
 
         <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-x-14">
-          <ul className="flex flex-col gap-11">
-            {leftRankingItems.map((item) => (
-              <RankingItem key={item.rank} item={item} />
-            ))}
-          </ul>
+          <RankingList items={leftRankingItems} />
 
           <div className="w-px bg-gray-100" aria-hidden="true" />
 
-          <ul className="flex flex-col gap-11">
-            {rightRankingItems.map((item) => (
-              <RankingItem key={item.rank} item={item} />
-            ))}
-          </ul>
+          <RankingList items={rightRankingItems} />
         </div>
       </article>
     </section>
