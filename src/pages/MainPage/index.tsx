@@ -2,6 +2,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import StockIndexCard from '@/components/main/MarketIndexCard';
 import type { MarketIndexCardProps } from '@/components/main/MarketIndexCard/types';
+import RankingCard from '@/components/main/RankingCard';
 
 const marketIndices: MarketIndexCardProps[] = [
   {
@@ -52,12 +53,14 @@ function MainPage() {
           slidesOffsetAfter={8}
         >
           {marketIndices.map((indexData) => (
-            <SwiperSlide key={indexData.name} className="w-70!">
+            <SwiperSlide key={indexData.name} style={{ width: 280 }}>
               <StockIndexCard {...indexData} />
             </SwiperSlide>
           ))}
         </Swiper>
       </div>
+
+      <RankingCard />
     </section>
   );
 }
