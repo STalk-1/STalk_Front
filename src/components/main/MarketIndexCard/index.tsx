@@ -10,11 +10,11 @@ import {
 import type { MarketIndexCardProps, MarketIndexType } from './types';
 
 function MarketIndexCard({
-  name = 'KOSPI',
-  value = 5507.01,
-  change = 15.26,
-  changeRate = -0.28,
-  direction = 'DOWN',
+  name,
+  value,
+  change,
+  changeRate,
+  direction,
 }: MarketIndexCardProps) {
   const isUp = direction === 'UP';
   const isDown = direction === 'DOWN';
