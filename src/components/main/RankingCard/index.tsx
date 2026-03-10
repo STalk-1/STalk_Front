@@ -1,109 +1,10 @@
+import { useEffect, useState } from 'react';
+
+import { getTopStocks } from '@/apis/main/ranking';
+import type { TopStocksResponse } from '@/apis/main/types';
 import { IcGraph } from '@/assets/icons';
 import RankingItem from '@/components/main/RankingCard/RankingItem';
 import type { RankingItem as RankingItemData } from '@/components/main/RankingCard/RankingItem/types';
-
-const rankingItems: RankingItemData[] = [
-  {
-    rank: 1,
-    name: '삼성전자',
-    market: 'KOSPI',
-    symbol: '005930',
-    price: 182400,
-    change: 3800,
-    changeRate: 2.13,
-    direction: 'UP',
-  },
-  {
-    rank: 2,
-    name: '삼성전자',
-    market: 'KOSPI',
-    symbol: '005930',
-    price: 182400,
-    change: 3800,
-    changeRate: 2.13,
-    direction: 'UP',
-  },
-  {
-    rank: 3,
-    name: '삼성전자',
-    market: 'KOSPI',
-    symbol: '005930',
-    price: 182400,
-    change: 3800,
-    changeRate: 2.13,
-    direction: 'UP',
-  },
-  {
-    rank: 4,
-    name: '삼성전자',
-    market: 'KOSPI',
-    symbol: '005930',
-    price: 182400,
-    change: 3800,
-    changeRate: 2.13,
-    direction: 'UP',
-  },
-  {
-    rank: 5,
-    name: '삼성전자',
-    market: 'KOSPI',
-    symbol: '005930',
-    price: 182400,
-    change: 3800,
-    changeRate: 2.13,
-    direction: 'UP',
-  },
-  {
-    rank: 6,
-    name: '삼성전자',
-    market: 'KOSPI',
-    symbol: '005930',
-    price: 182400,
-    change: 3800,
-    changeRate: 2.13,
-    direction: 'UP',
-  },
-  {
-    rank: 7,
-    name: '삼성전자',
-    market: 'KOSPI',
-    symbol: '005930',
-    price: 182400,
-    change: 3800,
-    changeRate: 2.13,
-    direction: 'UP',
-  },
-  {
-    rank: 8,
-    name: '삼성전자',
-    market: 'KOSPI',
-    symbol: '005930',
-    price: 182400,
-    change: 3800,
-    changeRate: 2.13,
-    direction: 'UP',
-  },
-  {
-    rank: 9,
-    name: '삼성전자',
-    market: 'KOSPI',
-    symbol: '005930',
-    price: 182400,
-    change: 3800,
-    changeRate: 2.13,
-    direction: 'UP',
-  },
-  {
-    rank: 10,
-    name: '삼성전자',
-    market: 'KOSPI',
-    symbol: '005930',
-    price: 182400,
-    change: 3800,
-    changeRate: 2.13,
-    direction: 'UP',
-  },
-];
 
 type RankingListProps = {
   items: RankingItemData[];
@@ -113,22 +14,57 @@ function RankingList({ items }: RankingListProps) {
   return (
     <ul className="flex flex-col gap-11">
       {items.map((item) => (
-        <RankingItem key={item.rank} item={item} />
+        <RankingItem key={`${item.rank}-${item.symbol}`} item={item} />
       ))}
     </ul>
   );
 }
 
 function RankingCard() {
+  const [rankingData, setRankingData] = useState<TopStocksResponse | null>(
+    null
+  );
+
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchTopStocks = async () => {
+      try {
+        const data = await getTopStocks();
+        if (mounted) {
+          setRankingData(data);
+        }
+      } catch {
+        if (mounted) {
+          setRankingData(null);
+        }
+      }
+    };
+
+    fetchTopStocks();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const rankingItems = rankingData?.items ?? [];
   const leftRankingItems = rankingItems.slice(0, 5);
   const rightRankingItems = rankingItems.slice(5, 10);
+
+  const desktopCount = rankingData?.count ?? 10;
+  const mobileCount = Math.min(5, desktopCount);
+  const desktopTitle = rankingData?.title ?? `거래량 급등 TOP ${desktopCount}`;
+  const mobileTitle = desktopTitle.match(/TOP\s*\d+/i)
+    ? desktopTitle.replace(/TOP\s*\d+/i, `TOP ${mobileCount}`)
+    : `거래량 급등 TOP ${mobileCount}`;
 
   return (
     <section className="mt-10 w-full">
       <h2 className="typo-20-regular mb-8 flex items-center gap-4 leading-none font-semibold text-black">
         <IcGraph className="h-4.5 w-4.5 text-green-500" aria-hidden="true" />
-        <span className="lg:hidden">거래량 급등 TOP 5</span>
-        <span className="hidden lg:inline">거래량 급등 TOP 10</span>
+        <span className="lg:hidden">{mobileTitle}</span>
+        <span className="hidden lg:inline">{desktopTitle}</span>
       </h2>
 
       <article className="w-full rounded-xl bg-white px-5 py-8 shadow-xl md:px-14 md:py-12">
