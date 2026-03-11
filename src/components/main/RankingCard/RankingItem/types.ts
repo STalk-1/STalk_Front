@@ -7,4 +7,8 @@ type RankingItem = QuoteData & {
   symbol: string;
 };
 
-export type { RankingItem };
+type RankingItemProps = {
+  item: RankingItem;
+};
+
+export type { RankingItem, RankingItemProps };
