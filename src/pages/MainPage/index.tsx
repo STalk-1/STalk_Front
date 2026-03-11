@@ -3,23 +3,17 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { getMarketIndices } from '@/apis/main/market';
 import StockIndexCard from '@/components/main/MarketIndexCard';
-import type {
-  MarketIndexCardProps,
-  MarketIndexType,
-} from '@/components/main/MarketIndexCard/types';
+import type { MarketIndexCardProps } from '@/components/main/MarketIndexCard/types';
 import RankingCard from '@/components/main/RankingCard';
-
-const marketNameMap: Record<string, MarketIndexType> = {
-  KOSPI: 'KOSPI',
-  NASDAQ: 'NASDAQ',
-  SNP500: 'SNP500',
-  'S&P500': 'SNP500',
-  USDKRW: 'USDKRW',
-  'USD/KRW': 'USDKRW',
-};
+import {
+  MARKET_INDEX_ORDER,
+  MARKET_NAME_MAP,
+} from '@/pages/MainPage/constants';
 
 function MainPage() {
-  const [marketIndices, setMarketIndices] = useState<MarketIndexCardProps[]>([]);
+  const [marketIndices, setMarketIndices] = useState<MarketIndexCardProps[]>(
+    []
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -33,7 +27,7 @@ function MainPage() {
 
         const normalized = data.markets
           .map((market) => {
-            const normalizedName = marketNameMap[market.name];
+            const normalizedName = MARKET_NAME_MAP[market.name];
             if (!normalizedName) {
               return null;
             }
@@ -64,13 +58,12 @@ function MainPage() {
   }, []);
 
   const orderedMarketIndices = useMemo(() => {
-    const order: MarketIndexType[] = ['KOSPI', 'NASDAQ', 'SNP500', 'USDKRW'];
     const byName = new Map(
       marketIndices.map((market) => [market.name, market])
     );
-    return order
-      .map((name) => byName.get(name))
-      .filter((market): market is MarketIndexCardProps => Boolean(market));
+    return MARKET_INDEX_ORDER.map((name) => byName.get(name)).filter(
+      (market): market is MarketIndexCardProps => Boolean(market)
+    );
   }, [marketIndices]);
 
   return (
