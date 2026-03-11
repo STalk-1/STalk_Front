@@ -10,6 +10,10 @@ function RankingItem({ item }: RankingItemProps) {
     : isDown
       ? 'text-blue'
       : 'text-grey-500';
+  const formattedChange = `${isDown ? '-' : ''}${Math.abs(item.change).toLocaleString('en-US')}`;
+  const formattedChangeRate = `${isDown ? '-' : ''}${Math.abs(
+    item.changeRate
+  ).toLocaleString('en-US')}%`;
 
   return (
     <li className="grid grid-cols-[32px_1fr_auto_auto] items-center gap-x-5 md:grid-cols-[44px_1fr_auto_auto] md:gap-x-5">
@@ -45,10 +49,10 @@ function RankingItem({ item }: RankingItemProps) {
         )}
         <div>
           <p className="typo-10-regular leading-none">
-            {item.change.toLocaleString('en-US')}
+            {formattedChange}
           </p>
           <p className="typo-10-regular mt-1 leading-none">
-            {item.changeRate}%
+            {formattedChangeRate}
           </p>
         </div>
       </div>
