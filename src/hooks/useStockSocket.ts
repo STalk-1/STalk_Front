@@ -6,6 +6,8 @@ import SockJS from 'sockjs-client';
 import type { QuoteData, QuoteUpdate } from '@/types/quote';
 
 const STOCK_WS_BROKER = import.meta.env.VITE_STOCK_WS_BROKER;
+const RECONNECT_DELAY = 5000;
+const HEARTBEAT_OUTGOING_INTERVAL = 20000;
 
 export function useStockSocket(
   symbols: string[],
@@ -29,10 +31,10 @@ export function useStockSocket(
 
     const client = new Client({
       webSocketFactory: () => new SockJS(STOCK_WS_BROKER),
-      reconnectDelay: 5000,
+      reconnectDelay: RECONNECT_DELAY,
       // SockJS 사용 시 stompjs는 ping/pong을 재설정해야 함
       heartbeatIncoming: 0,
-      heartbeatOutgoing: 20000,
+      heartbeatOutgoing: HEARTBEAT_OUTGOING_INTERVAL,
     });
 
     client.onConnect = () => {
