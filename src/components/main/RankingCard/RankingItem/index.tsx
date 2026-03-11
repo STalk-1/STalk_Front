@@ -1,10 +1,6 @@
 import { IcCaretDown, IcCaretUp } from '@/assets/icons';
 
-import type { RankingItem as RankingItemData } from './types';
-
-type RankingItemProps = {
-  item: RankingItemData;
-};
+import type { RankingItemProps } from './types';
 
 function RankingItem({ item }: RankingItemProps) {
   const isUp = item.direction === 'UP';

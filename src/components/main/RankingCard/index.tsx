@@ -5,7 +5,7 @@ import type { TopStocksResponse } from '@/apis/main/types';
 import { IcGraph } from '@/assets/icons';
 import RankingItem from '@/components/main/RankingCard/RankingItem';
 import type { RankingListProps } from '@/components/main/RankingCard/types';
-import { useStockSocket } from '@/hooks/socket/useStockSocket';
+import { useStockSocket } from '@/hooks/useStockSocket';
 
 function RankingList({ items }: RankingListProps) {
   return (
