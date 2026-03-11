@@ -31,7 +31,7 @@ function MarketIndexCard({
     typeof change === 'number' ? `${change.toLocaleString('en-US')}` : change;
   const formattedChangeRate =
     typeof changeRate === 'number'
-      ? `${changeRate.toLocaleString('en-US')}%`
+      ? `${isDown ? '-' : ''}${Math.abs(changeRate).toLocaleString('en-US')}%`
       : changeRate;
 
   const indexIconMap: Record<MarketIndexType, typeof IcKospi> = {
@@ -40,12 +40,19 @@ function MarketIndexCard({
     SNP500: IcSNP,
     USDKRW: IcUsd,
   };
+  const indexLabelMap: Record<MarketIndexType, string> = {
+    KOSPI: 'KOSPI',
+    NASDAQ: 'NASDAQ',
+    SNP500: 'S&P500',
+    USDKRW: 'USD/KRW',
+  };
   const IndexIcon = indexIconMap[name];
+  const indexLabel = indexLabelMap[name];
 
   return (
     <article className="w-70 rounded-xl bg-white px-9 py-8 shadow-xl">
       <div className="mb-3 flex items-start justify-between">
-        <p className="typo-16-medium text-grey-500">{name}</p>
+        <p className="typo-16-medium text-grey-500">{indexLabel}</p>
         <IndexIcon className="mt-1 h-5 w-5" aria-hidden="true" />
       </div>
 
