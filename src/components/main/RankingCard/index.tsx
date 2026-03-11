@@ -1,14 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { getTopStocks } from '@/apis/main/ranking';
 import type { TopStocksResponse } from '@/apis/main/types';
 import { IcGraph } from '@/assets/icons';
 import RankingItem from '@/components/main/RankingCard/RankingItem';
-import type { RankingItem as RankingItemData } from '@/components/main/RankingCard/RankingItem/types';
-
-type RankingListProps = {
-  items: RankingItemData[];
-};
+import type { RankingListProps } from '@/components/main/RankingCard/types';
+import { useStockSocket } from '@/hooks/socket/useStockSocket';
 
 function RankingList({ items }: RankingListProps) {
   return (
@@ -48,7 +45,34 @@ function RankingCard() {
     };
   }, []);
 
-  const rankingItems = rankingData?.items ?? [];
+  const rankingItems = useMemo(() => rankingData?.items ?? [], [rankingData]);
+  const symbols = useMemo(
+    () => rankingItems.map((item) => item.symbol),
+    [rankingItems]
+  );
+
+  useStockSocket(symbols, (symbol, data) => {
+    setRankingData((prev) => {
+      if (!prev) {
+        return prev;
+      }
+
+      const items = prev.items.map((item) =>
+        item.symbol === symbol
+          ? {
+              ...item,
+              price: data.price,
+              change: data.change,
+              changeRate: data.changeRate,
+              direction: data.direction,
+            }
+          : item
+      );
+
+      return { ...prev, items };
+    });
+  });
+
   const leftRankingItems = rankingItems.slice(0, 5);
   const rightRankingItems = rankingItems.slice(5, 10);
 

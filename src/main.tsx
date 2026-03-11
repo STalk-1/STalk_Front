@@ -1,3 +1,4 @@
+import './polyfills';
 import '@/styles/globals.css';
 
 import { StrictMode } from 'react';

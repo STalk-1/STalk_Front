@@ -1,12 +1,10 @@
-type RankingItem = {
+import type { QuoteData } from '@/types/quote';
+
+type RankingItem = QuoteData & {
   rank: number;
   name: string;
   market: string;
   symbol: string;
-  price: number;
-  change: number;
-  changeRate: number;
-  direction: 'UP' | 'DOWN' | 'FLAT';
 };
 
 export type { RankingItem };
