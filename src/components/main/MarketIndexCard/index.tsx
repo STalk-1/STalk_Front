@@ -1,13 +1,7 @@
-import {
-  IcArrowDown,
-  IcArrowUp,
-  IcKospi,
-  IcNasdaq,
-  IcSNP,
-  IcUsd,
-} from '@/assets/icons';
+import { IcArrowDown, IcArrowUp } from '@/assets/icons';
 
-import type { MarketIndexCardProps, MarketIndexType } from './types';
+import { INDEX_ICON_MAP, INDEX_LABEL_MAP } from './constants';
+import type { MarketIndexCardProps } from './types';
 
 function MarketIndexCard({
   name,
@@ -34,20 +28,8 @@ function MarketIndexCard({
       ? `${isDown ? '-' : ''}${Math.abs(changeRate).toLocaleString('en-US')}%`
       : changeRate;
 
-  const indexIconMap: Record<MarketIndexType, typeof IcKospi> = {
-    KOSPI: IcKospi,
-    NASDAQ: IcNasdaq,
-    SNP500: IcSNP,
-    USDKRW: IcUsd,
-  };
-  const indexLabelMap: Record<MarketIndexType, string> = {
-    KOSPI: 'KOSPI',
-    NASDAQ: 'NASDAQ',
-    SNP500: 'S&P500',
-    USDKRW: 'USD/KRW',
-  };
-  const IndexIcon = indexIconMap[name];
-  const indexLabel = indexLabelMap[name];
+  const IndexIcon = INDEX_ICON_MAP[name];
+  const indexLabel = INDEX_LABEL_MAP[name];
 
   return (
     <article className="w-70 rounded-xl bg-white px-9 py-8 shadow-xl">
