@@ -9,20 +9,20 @@ import type {
 } from '@/components/main/MarketIndexCard/types';
 import RankingCard from '@/components/main/RankingCard';
 
+const marketNameMap: Record<string, MarketIndexType> = {
+  KOSPI: 'KOSPI',
+  NASDAQ: 'NASDAQ',
+  SNP500: 'SNP500',
+  'S&P500': 'SNP500',
+  USDKRW: 'USDKRW',
+  'USD/KRW': 'USDKRW',
+};
+
 function MainPage() {
   const [marketIndices, setMarketIndices] = useState<MarketIndexCardProps[]>([]);
 
   useEffect(() => {
     let mounted = true;
-
-    const marketNameMap: Record<string, MarketIndexType> = {
-      KOSPI: 'KOSPI',
-      NASDAQ: 'NASDAQ',
-      SNP500: 'SNP500',
-      'S&P500': 'SNP500',
-      USDKRW: 'USDKRW',
-      'USD/KRW': 'USDKRW',
-    };
 
     const fetchMarketIndices = async () => {
       try {
