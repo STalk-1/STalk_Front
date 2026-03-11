@@ -1,3 +1,4 @@
+import type { MarketIndexType } from '@/components/main/MarketIndexCard/types';
 import type { RankingItem as RankingItemData } from '@/components/main/RankingCard/RankingItem/types';
 
 type TopStocksResponse = {
@@ -7,4 +8,17 @@ type TopStocksResponse = {
   count: number;
 };
 
-export type { TopStocksResponse };
+type MarketItem = {
+  name: MarketIndexType | 'S&P500' | 'USD/KRW' | string;
+  value: number;
+  change: number;
+  changeRate: number;
+  direction: 'UP' | 'DOWN' | 'FLAT';
+};
+
+type MarketResponse = {
+  updatedAt: string;
+  markets: MarketItem[];
+};
+
+export type { MarketResponse, TopStocksResponse };

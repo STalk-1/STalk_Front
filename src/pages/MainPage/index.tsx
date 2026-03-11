@@ -1,45 +1,82 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
+import { getMarketIndices } from '@/apis/main/market';
 import StockIndexCard from '@/components/main/MarketIndexCard';
-import type { MarketIndexCardProps } from '@/components/main/MarketIndexCard/types';
+import type {
+  MarketIndexCardProps,
+  MarketIndexType,
+} from '@/components/main/MarketIndexCard/types';
 import RankingCard from '@/components/main/RankingCard';
 
-const marketIndices: MarketIndexCardProps[] = [
-  {
-    name: 'KOSPI',
-    value: 2507.01,
-    change: 15.21,
-    changeRate: 0.61,
-    direction: 'UP',
-  },
-  {
-    name: 'NASDAQ',
-    value: 16234.55,
-    change: -120.12,
-    changeRate: -0.74,
-    direction: 'DOWN',
-  },
-  {
-    name: 'SNP500',
-    value: 5123.44,
-    change: 10.12,
-    changeRate: 0.2,
-    direction: 'UP',
-  },
-  {
-    name: 'USDKRW',
-    value: 1320.55,
-    change: 0,
-    changeRate: 0,
-    direction: 'FLAT',
-  },
-];
-
 function MainPage() {
+  const [marketIndices, setMarketIndices] = useState<MarketIndexCardProps[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const marketNameMap: Record<string, MarketIndexType> = {
+      KOSPI: 'KOSPI',
+      NASDAQ: 'NASDAQ',
+      SNP500: 'SNP500',
+      'S&P500': 'SNP500',
+      USDKRW: 'USDKRW',
+      'USD/KRW': 'USDKRW',
+    };
+
+    const fetchMarketIndices = async () => {
+      try {
+        const data = await getMarketIndices();
+        if (!mounted) {
+          return;
+        }
+
+        const normalized = data.markets
+          .map((market) => {
+            const normalizedName = marketNameMap[market.name];
+            if (!normalizedName) {
+              return null;
+            }
+
+            return {
+              name: normalizedName,
+              value: market.value,
+              change: market.change,
+              changeRate: market.changeRate,
+              direction: market.direction,
+            } satisfies MarketIndexCardProps;
+          })
+          .filter((market): market is MarketIndexCardProps => market !== null);
+
+        if (normalized.length > 0) {
+          setMarketIndices(normalized);
+        }
+      } catch {
+        // API 실패 시 시장 지수 카드는 빈 상태 유지
+      }
+    };
+
+    fetchMarketIndices();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const orderedMarketIndices = useMemo(() => {
+    const order: MarketIndexType[] = ['KOSPI', 'NASDAQ', 'SNP500', 'USDKRW'];
+    const byName = new Map(
+      marketIndices.map((market) => [market.name, market])
+    );
+    return order
+      .map((name) => byName.get(name))
+      .filter((market): market is MarketIndexCardProps => Boolean(market));
+  }, [marketIndices]);
+
   return (
     <section className="py-6">
       <div className="hidden gap-5 lg:flex">
-        {marketIndices.map((indexData) => (
+        {orderedMarketIndices.map((indexData) => (
           <StockIndexCard key={indexData.name} {...indexData} />
         ))}
       </div>
@@ -52,7 +89,7 @@ function MainPage() {
           slidesOffsetBefore={8}
           slidesOffsetAfter={8}
         >
-          {marketIndices.map((indexData) => (
+          {orderedMarketIndices.map((indexData) => (
             <SwiperSlide key={indexData.name} className="w-70!">
               <StockIndexCard {...indexData} />
             </SwiperSlide>
