@@ -1,0 +1,53 @@
+@theme {
+  --font-sans: 'Pretendard Variable', sans-serif;
+}
+
+@utility typo-20-medium {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-medium);
+}
+
+@utility typo-12-medium {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+}
+
+@utility typo-16-medium {
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+}
+
+@utility typo-32-semibold {
+  font-size: 2rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+@utility typo-24-semibold {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+@utility typo-20-semibold {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+@utility typo-20-regular {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-regular);
+}
+
+@utility typo-16-regular {
+  font-size: 1rem;
+  font-weight: var(--font-weight-regular);
+}
+
+@utility typo-14-regular {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-regular);
+}
+
+@utility typo-10-regular {
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-regular);
+}

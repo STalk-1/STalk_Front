@@ -1,0 +1,13 @@
+@import 'tailwindcss';
+@import 'swiper/swiper.css';
+@import './fonts.css';
+@import './colors.css';
+@import './twUtills.css';
+
+body {
+  font-family: var(--font-sans);
+}
+
+.market-index-swiper.swiper {
+  overflow: visible;
+}
