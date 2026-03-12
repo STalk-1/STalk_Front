@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { IcLike } from '@/assets/icons';
 import DirectionToneText from '@/components/common/DirectionToneText';
 
@@ -13,11 +11,11 @@ function StockCard({
   price,
   changeRate,
   changeAmount,
-  isLiked = false,
+  liked = false,
+  onLikeToggle,
   detailsLabel = STOCK_CARD_LABELS.details,
   showChart = false,
 }: StockCardProps) {
-  const [liked, setLiked] = useState(isLiked);
   const direction =
     changeRate > 0 ? 'UP' : changeRate < 0 ? 'DOWN' : 'FLAT';
   const signedPercent = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(changeRate).toLocaleString('ko-KR')}%`;
@@ -89,7 +87,7 @@ function StockCard({
           type="button"
           aria-label="관심 종목 토글"
           aria-pressed={liked}
-          onClick={() => setLiked((prev) => !prev)}
+          onClick={onLikeToggle}
         >
           <IcLike
             className={`h-4.5 w-4.5 shrink-0 ${
