@@ -1,5 +1,8 @@
+import StockListSection from '@/components/common/StockListSection';
+import { MOCK_STOCKS } from '@/pages/stocks/mockStocks';
+
 function AllStocksPage() {
-  return <section className="py-6">전체 종목</section>;
+  return <StockListSection items={MOCK_STOCKS} />;
 }
 
 export default AllStocksPage;
