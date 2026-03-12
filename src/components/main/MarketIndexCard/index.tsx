@@ -1,4 +1,5 @@
 import { IcArrowDown, IcArrowUp } from '@/assets/icons';
+import DirectionToneText from '@/components/common/DirectionToneText';
 
 import { INDEX_ICON_MAP, INDEX_LABEL_MAP } from './constants';
 import type { MarketIndexCardProps } from './types';
@@ -13,11 +14,6 @@ function MarketIndexCard({
   const isUp = direction === 'UP';
   const isDown = direction === 'DOWN';
   const ChangeIcon = isUp ? IcArrowUp : isDown ? IcArrowDown : null;
-  const changeColorClass = isUp
-    ? 'text-red'
-    : isDown
-      ? 'text-blue'
-      : 'text-grey-500';
 
   const formattedValue =
     typeof value === 'number' ? value.toLocaleString('en-US') : value;
@@ -42,8 +38,10 @@ function MarketIndexCard({
         {formattedValue}
       </p>
 
-      <p
-        className={`typo-16-regular inline-flex items-center gap-2 ${changeColorClass}`}
+      <DirectionToneText
+        direction={direction}
+        as="p"
+        className="typo-16-regular inline-flex items-center gap-2"
       >
         {ChangeIcon ? (
           <ChangeIcon className="h-3 w-3" aria-hidden="true" />
@@ -56,7 +54,7 @@ function MarketIndexCard({
         <span>
           {formattedChange} ({formattedChangeRate})
         </span>
-      </p>
+      </DirectionToneText>
     </article>
   );
 }
