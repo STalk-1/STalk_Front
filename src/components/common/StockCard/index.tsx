@@ -25,6 +25,10 @@ function StockCard({
         : 'text-grey-500';
   const signedPercent = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(changeRate).toLocaleString('ko-KR')}%`;
   const signedWon = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(changeAmount).toLocaleString('ko-KR')}원`;
+  const changeItems = [
+    { value: signedPercent, label: STOCK_CARD_LABELS.monthChangeRate },
+    { value: signedWon, label: STOCK_CARD_LABELS.dayChangeAmount },
+  ];
 
   return (
     <article className="w-full rounded-xl bg-white px-5 py-5 shadow-lg">
@@ -81,23 +85,16 @@ function StockCard({
 
         <div className="mt-3 flex items-end justify-between gap-4">
           <div className="flex items-end gap-5">
-            <div>
-              <p className={`typo-12-medium leading-none ${changeColorClass}`}>
-                {signedPercent}
-              </p>
-              <p className="typo-10-regular text-grey-500 mt-1">
-                {STOCK_CARD_LABELS.monthChangeRate}
-              </p>
-            </div>
-
-            <div>
-              <p className={`typo-12-medium leading-none ${changeColorClass}`}>
-                {signedWon}
-              </p>
-              <p className="typo-10-regular text-grey-500 mt-1">
-                {STOCK_CARD_LABELS.dayChangeAmount}
-              </p>
-            </div>
+            {changeItems.map((item) => (
+              <div key={item.label}>
+                <p className={`typo-12-medium leading-none ${changeColorClass}`}>
+                  {item.value}
+                </p>
+                <p className="typo-10-regular text-grey-500 mt-1">
+                  {item.label}
+                </p>
+              </div>
+            ))}
           </div>
 
           <button className="typo-10-regular text-grey-500 pb-1" type="button">
@@ -116,24 +113,16 @@ function StockCard({
               {STOCK_CARD_LABELS.currentPrice}
             </p>
           </div>
-
-          <div>
-            <p className={`typo-12-medium leading-none ${changeColorClass}`}>
-              {signedPercent}
-            </p>
-            <p className="typo-10-regular text-grey-500 mt-1">
-              {STOCK_CARD_LABELS.monthChangeRate}
-            </p>
-          </div>
-
-          <div>
-            <p className={`typo-12-medium leading-none ${changeColorClass}`}>
-              {signedWon}
-            </p>
-            <p className="typo-10-regular text-grey-500 mt-1">
-              {STOCK_CARD_LABELS.dayChangeAmount}
-            </p>
-          </div>
+          {changeItems.map((item) => (
+            <div key={item.label}>
+              <p className={`typo-12-medium leading-none ${changeColorClass}`}>
+                {item.value}
+              </p>
+              <p className="typo-10-regular text-grey-500 mt-1">
+                {item.label}
+              </p>
+            </div>
+          ))}
         </div>
 
         <div className="flex items-end gap-3">
