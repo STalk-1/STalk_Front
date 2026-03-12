@@ -6,6 +6,10 @@ const TAB_BAR_ITEMS: Record<string, TabBarItem> = {
     path: '/',
     end: true,
   },
+  ALL_STOCKS: {
+    label: '전체 종목',
+    path: '/all-stocks',
+  },
   INTEREST_STOCKS: {
     label: '관심 종목',
     path: '/interest',
