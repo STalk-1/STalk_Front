@@ -1,15 +1,11 @@
 import { IcCaretDown, IcCaretUp } from '@/assets/icons';
+import DirectionToneText from '@/components/common/DirectionToneText';
 
 import type { RankingItemProps } from './types';
 
 function RankingItem({ item }: RankingItemProps) {
   const isUp = item.direction === 'UP';
   const isDown = item.direction === 'DOWN';
-  const changeColorClass = isUp
-    ? 'text-red'
-    : isDown
-      ? 'text-blue'
-      : 'text-grey-500';
   const formattedChange = `${isDown ? '-' : ''}${Math.abs(item.change).toLocaleString('en-US')}`;
   const formattedChangeRate = `${isDown ? '-' : ''}${Math.abs(
     item.changeRate
@@ -28,14 +24,18 @@ function RankingItem({ item }: RankingItemProps) {
         </p>
       </div>
 
-      <p
-        className={`typo-16-medium justify-self-end leading-none ${changeColorClass}`}
+      <DirectionToneText
+        direction={item.direction}
+        as="p"
+        className="typo-16-medium justify-self-end leading-none"
       >
         {item.price.toLocaleString('en-US')}
-      </p>
+      </DirectionToneText>
 
-      <div
-        className={`flex items-center gap-5 justify-self-end text-right ${changeColorClass}`}
+      <DirectionToneText
+        direction={item.direction}
+        as="div"
+        className="flex items-center gap-5 justify-self-end text-right"
       >
         {isUp ? (
           <IcCaretUp className="h-3 w-3 shrink-0" aria-hidden="true" />
@@ -48,14 +48,12 @@ function RankingItem({ item }: RankingItemProps) {
           />
         )}
         <div>
-          <p className="typo-10-regular leading-none">
-            {formattedChange}
-          </p>
+          <p className="typo-10-regular leading-none">{formattedChange}</p>
           <p className="typo-10-regular mt-1 leading-none">
             {formattedChangeRate}
           </p>
         </div>
-      </div>
+      </DirectionToneText>
     </li>
   );
 }
