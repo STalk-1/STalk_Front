@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { IcLike } from '@/assets/icons';
+import DirectionToneText from '@/components/common/DirectionToneText';
 
 import { STOCK_CARD_LABELS } from './constants';
 import type { StockCardProps } from './types';
@@ -17,12 +18,8 @@ function StockCard({
   showChart = false,
 }: StockCardProps) {
   const [liked, setLiked] = useState(isLiked);
-  const changeColorClass =
-    changeRate > 0
-      ? 'text-red'
-      : changeRate < 0
-        ? 'text-blue'
-        : 'text-grey-500';
+  const direction =
+    changeRate > 0 ? 'UP' : changeRate < 0 ? 'DOWN' : 'FLAT';
   const signedPercent = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(changeRate).toLocaleString('ko-KR')}%`;
   const signedWon = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(changeAmount).toLocaleString('ko-KR')}원`;
   const changeItems = [
@@ -57,9 +54,13 @@ function StockCard({
 
       <div className="mt-3 md:hidden">
         <div className="flex items-end justify-between gap-4">
-          <p className={`typo-20-semibold leading-none ${changeColorClass}`}>
+          <DirectionToneText
+            direction={direction}
+            as="p"
+            className="typo-20-semibold leading-none"
+          >
             {price.toLocaleString('ko-KR')}원
-          </p>
+          </DirectionToneText>
           {showChart ? (
             <svg
               className="h-8 w-28 shrink-0"
@@ -87,12 +88,14 @@ function StockCard({
           <div className="flex items-end gap-5">
             {changeItems.map((item) => (
               <div key={item.label}>
-                <p className={`typo-12-medium leading-none ${changeColorClass}`}>
+                <DirectionToneText
+                  direction={direction}
+                  as="p"
+                  className="typo-12-medium leading-none"
+                >
                   {item.value}
-                </p>
-                <p className="typo-10-regular text-grey-500 mt-1">
-                  {item.label}
-                </p>
+                </DirectionToneText>
+                <p className="typo-10-regular text-grey-500 mt-1">{item.label}</p>
               </div>
             ))}
           </div>
@@ -106,21 +109,28 @@ function StockCard({
       <div className="mt-3 hidden items-end justify-between gap-4 md:flex">
         <div className="flex items-end gap-8">
           <div>
-            <p className={`typo-20-semibold leading-none ${changeColorClass}`}>
+            <DirectionToneText
+              direction={direction}
+              as="p"
+              className="typo-20-semibold leading-none"
+            >
               {price.toLocaleString('ko-KR')}원
-            </p>
+            </DirectionToneText>
             <p className="typo-10-regular text-grey-500 mt-1">
               {STOCK_CARD_LABELS.currentPrice}
             </p>
           </div>
+
           {changeItems.map((item) => (
             <div key={item.label}>
-              <p className={`typo-12-medium leading-none ${changeColorClass}`}>
+              <DirectionToneText
+                direction={direction}
+                as="p"
+                className="typo-12-medium leading-none"
+              >
                 {item.value}
-              </p>
-              <p className="typo-10-regular text-grey-500 mt-1">
-                {item.label}
-              </p>
+              </DirectionToneText>
+              <p className="typo-10-regular text-grey-500 mt-1">{item.label}</p>
             </div>
           ))}
         </div>
