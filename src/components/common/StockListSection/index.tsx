@@ -1,11 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import {
-  addInterestStock,
-  removeInterestStock,
-} from '@/apis/stocks/interest';
 import StockCard from '@/components/common/StockCard';
 import type { StockCardProps } from '@/components/common/StockCard/types';
+import { useFavoriteStocks } from '@/contexts/useFavoriteStocks';
 
 type StockListSectionProps = {
   items: StockCardProps[];
@@ -18,52 +15,19 @@ function StockListSection({
   showChart = false,
   removeOnUnlike = false,
 }: StockListSectionProps) {
-  const [likedBySymbol, setLikedBySymbol] = useState<Record<string, boolean>>(
-    {}
-  );
-  const [pendingBySymbol, setPendingBySymbol] = useState<
-    Record<string, boolean>
-  >({});
+  const { favoriteSymbols, pendingBySymbol, toggleFavorite } = useFavoriteStocks();
 
   const mergedItems = useMemo(
     () =>
       items
         .map((item) => ({
           ...item,
-          liked: likedBySymbol[item.symbol] ?? item.liked ?? false,
+          liked: favoriteSymbols.has(item.symbol),
           isLikePending: pendingBySymbol[item.symbol] ?? false,
         }))
         .filter((item) => (removeOnUnlike ? item.liked : true)),
-    [items, likedBySymbol, pendingBySymbol, removeOnUnlike]
+    [items, favoriteSymbols, pendingBySymbol, removeOnUnlike]
   );
-
-  const handleLikeToggle = async (stock: StockCardProps) => {
-    if (pendingBySymbol[stock.symbol]) {
-      return;
-    }
-
-    setPendingBySymbol((prev) => ({ ...prev, [stock.symbol]: true }));
-
-    try {
-      if (stock.liked) {
-        await removeInterestStock(stock.symbol);
-      } else {
-        await addInterestStock(stock.symbol);
-      }
-
-      setLikedBySymbol((prev) => ({
-        ...prev,
-        [stock.symbol]: !stock.liked,
-      }));
-    } catch (error) {
-      console.error(
-        stock.liked ? '관심 종목 해제 실패' : '관심 종목 등록 실패',
-        error
-      );
-    } finally {
-      setPendingBySymbol((prev) => ({ ...prev, [stock.symbol]: false }));
-    }
-  };
 
   return (
     <section className="py-6">
@@ -74,7 +38,7 @@ function StockListSection({
             {...stock}
             showChart={showChart}
             onLikeToggle={() => {
-              void handleLikeToggle(stock);
+              void toggleFavorite(stock);
             }}
           />
         ))}

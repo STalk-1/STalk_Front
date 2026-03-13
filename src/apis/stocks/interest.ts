@@ -1,8 +1,10 @@
 import api from '@/apis/base/axios';
 import type { FavoriteStocksResponse } from '@/apis/stocks/types';
 
-const getInterestStocks = async () => {
-  const { data } = await api.get<FavoriteStocksResponse>('/stocks/favorites');
+const getInterestStocks = async (signal?: AbortSignal) => {
+  const { data } = await api.get<FavoriteStocksResponse>('/stocks/favorites', {
+    signal,
+  });
   return data;
 };
 
