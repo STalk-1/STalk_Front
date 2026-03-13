@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
 
-import { addInterestStock } from '@/apis/stocks/interest';
+import {
+  addInterestStock,
+  removeInterestStock,
+} from '@/apis/stocks/interest';
 import StockCard from '@/components/common/StockCard';
 import type { StockCardProps } from '@/components/common/StockCard/types';
 
@@ -28,17 +31,28 @@ function StockListSection({ items, showChart = false }: StockListSectionProps) {
   );
 
   const handleLikeToggle = async (stock: StockCardProps) => {
-    if (stock.liked || pendingBySymbol[stock.symbol]) {
+    if (pendingBySymbol[stock.symbol]) {
       return;
     }
 
     setPendingBySymbol((prev) => ({ ...prev, [stock.symbol]: true }));
 
     try {
-      await addInterestStock(stock.symbol);
-      setLikedBySymbol((prev) => ({ ...prev, [stock.symbol]: true }));
+      if (stock.liked) {
+        await removeInterestStock(stock.symbol);
+      } else {
+        await addInterestStock(stock.symbol);
+      }
+
+      setLikedBySymbol((prev) => ({
+        ...prev,
+        [stock.symbol]: !stock.liked,
+      }));
     } catch (error) {
-      console.error('관심 종목 등록 실패', error);
+      console.error(
+        stock.liked ? '관심 종목 해제 실패' : '관심 종목 등록 실패',
+        error
+      );
     } finally {
       setPendingBySymbol((prev) => ({ ...prev, [stock.symbol]: false }));
     }
