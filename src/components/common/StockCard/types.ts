@@ -7,6 +7,7 @@ type StockCardProps = {
   change: number;
   liked?: boolean;
   onLikeToggle?: () => void;
+  isLikePending?: boolean;
   detailsLabel?: string;
   showChart?: boolean;
 };
