@@ -10,16 +10,15 @@ function StockCard({
   symbol,
   price,
   changeRate,
-  changeAmount,
+  change,
   liked = false,
   onLikeToggle,
   detailsLabel = STOCK_CARD_LABELS.details,
   showChart = false,
 }: StockCardProps) {
-  const direction =
-    changeRate > 0 ? 'UP' : changeRate < 0 ? 'DOWN' : 'FLAT';
+  const direction = changeRate > 0 ? 'UP' : changeRate < 0 ? 'DOWN' : 'FLAT';
   const signedPercent = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(changeRate).toLocaleString('ko-KR')}%`;
-  const signedWon = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(changeAmount).toLocaleString('ko-KR')}원`;
+  const signedWon = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(change).toLocaleString('ko-KR')}원`;
   const changeItems = [
     { value: signedPercent, label: STOCK_CARD_LABELS.monthChangeRate },
     { value: signedWon, label: STOCK_CARD_LABELS.dayChangeAmount },
@@ -59,7 +58,7 @@ function StockCard({
 
   const chart = (
     <svg
-      className="h-8 w-28 shrink-0 md:-translate-y-8 md:h-16"
+      className="h-8 w-28 shrink-0 md:h-16 md:-translate-y-8"
       viewBox="0 0 112 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
