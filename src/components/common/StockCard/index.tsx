@@ -13,6 +13,7 @@ function StockCard({
   change,
   liked = false,
   onLikeToggle,
+  isLikePending = false,
   detailsLabel = STOCK_CARD_LABELS.details,
   showChart = false,
 }: StockCardProps) {
@@ -86,6 +87,7 @@ function StockCard({
           type="button"
           aria-label="관심 종목 토글"
           aria-pressed={liked}
+          disabled={isLikePending}
           onClick={onLikeToggle}
         >
           <IcLike
