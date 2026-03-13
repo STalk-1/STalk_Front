@@ -45,7 +45,7 @@ function InterestStockPage() {
     };
   }, []);
 
-  return <StockListSection items={stocks} showChart />;
+  return <StockListSection items={stocks} showChart removeOnUnlike />;
 }
 
 export default InterestStockPage;
