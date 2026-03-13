@@ -10,9 +10,14 @@ import type { StockCardProps } from '@/components/common/StockCard/types';
 type StockListSectionProps = {
   items: StockCardProps[];
   showChart?: boolean;
+  removeOnUnlike?: boolean;
 };
 
-function StockListSection({ items, showChart = false }: StockListSectionProps) {
+function StockListSection({
+  items,
+  showChart = false,
+  removeOnUnlike = false,
+}: StockListSectionProps) {
   const [likedBySymbol, setLikedBySymbol] = useState<Record<string, boolean>>(
     {}
   );
@@ -22,12 +27,14 @@ function StockListSection({ items, showChart = false }: StockListSectionProps) {
 
   const mergedItems = useMemo(
     () =>
-      items.map((item) => ({
-        ...item,
-        liked: likedBySymbol[item.symbol] ?? item.liked ?? false,
-        isLikePending: pendingBySymbol[item.symbol] ?? false,
-      })),
-    [items, likedBySymbol, pendingBySymbol]
+      items
+        .map((item) => ({
+          ...item,
+          liked: likedBySymbol[item.symbol] ?? item.liked ?? false,
+          isLikePending: pendingBySymbol[item.symbol] ?? false,
+        }))
+        .filter((item) => (removeOnUnlike ? item.liked : true)),
+    [items, likedBySymbol, pendingBySymbol, removeOnUnlike]
   );
 
   const handleLikeToggle = async (stock: StockCardProps) => {
