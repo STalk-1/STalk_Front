@@ -11,4 +11,9 @@ const addInterestStock = async (symbol: string) => {
   return data;
 };
 
-export { addInterestStock, getInterestStocks };
+const removeInterestStock = async (symbol: string) => {
+  const { data } = await api.delete(`/stocks/favorites/${symbol}`);
+  return data;
+};
+
+export { addInterestStock, getInterestStocks, removeInterestStock };
