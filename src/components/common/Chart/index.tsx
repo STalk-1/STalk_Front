@@ -13,6 +13,16 @@ import { cn } from '@/utils/cn';
 
 import type { ChartProps } from './types';
 
+const CHART_COLORS = {
+  up: '#EF4444',
+  down: '#3B82F6',
+} as const;
+
+const CHART_FILL_COLORS = {
+  up: 'rgba(239, 68, 68, 0.15)',
+  down: 'rgba(59, 130, 246, 0.15)',
+} as const;
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -22,7 +32,7 @@ ChartJS.register(
   Filler
 );
 
-function Chart({ points, className, strokeColor = '#EF4444' }: ChartProps) {
+function Chart({ points, className, strokeColor = CHART_COLORS.up }: ChartProps) {
   if (!points || points.length === 0) {
     return (
       <div
@@ -43,9 +53,9 @@ function Chart({ points, className, strokeColor = '#EF4444' }: ChartProps) {
   const padding = Math.max(valueRange * 0.15, 1);
 
   const fillColor =
-    strokeColor === '#EF4444'
-      ? 'rgba(239, 68, 68, 0.15)'
-      : 'rgba(59, 130, 246, 0.15)';
+    strokeColor === CHART_COLORS.down
+      ? CHART_FILL_COLORS.down
+      : CHART_FILL_COLORS.up;
   const data = {
     labels: points.map((point) => point.time),
     datasets: [
@@ -89,3 +99,4 @@ function Chart({ points, className, strokeColor = '#EF4444' }: ChartProps) {
 }
 
 export default Chart;
+export { CHART_COLORS };

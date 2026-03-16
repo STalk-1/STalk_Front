@@ -1,5 +1,5 @@
 import { IcLike } from '@/assets/icons';
-import Chart from '@/components/common/Chart';
+import Chart, { CHART_COLORS } from '@/components/common/Chart';
 import DirectionToneText from '@/components/common/DirectionToneText';
 
 import { STOCK_CARD_LABELS } from './constants';
@@ -62,11 +62,7 @@ function StockCard({
   );
 
   const chartColor =
-    direction === 'UP'
-      ? '#EF4444'
-      : direction === 'DOWN'
-        ? '#3B82F6'
-        : '#EF4444';
+    direction === 'DOWN' ? CHART_COLORS.down : CHART_COLORS.up;
   const chart = (
     <Chart
       points={chartPoints}
