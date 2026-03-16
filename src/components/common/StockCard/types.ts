@@ -1,3 +1,5 @@
+import type { StockChartPoint } from '@/types/chart';
+
 type StockCardProps = {
   name: string;
   market: string;
@@ -5,6 +7,8 @@ type StockCardProps = {
   price: number;
   changeRate: number;
   change: number;
+  direction?: 'UP' | 'DOWN' | 'FLAT';
+  chartPoints?: StockChartPoint[];
   liked?: boolean;
   onLikeToggle?: () => void;
   isLikePending?: boolean;
@@ -12,4 +16,4 @@ type StockCardProps = {
   showChart?: boolean;
 };
 
-export type { StockCardProps };
+export type { StockCardProps, StockChartPoint };

@@ -1,3 +1,4 @@
+import type { StockChartPoint } from '@/types/chart';
 import type { QuoteData } from '@/types/quote';
 
 type AllStocksItem = {
@@ -13,14 +14,9 @@ type AllStocksResponse = {
   count: number;
 };
 
-type FavoriteChartPoint = {
-  time: string;
-  close: number;
-};
-
 type FavoriteChart = {
   interval: string;
-  points: FavoriteChartPoint[];
+  points: StockChartPoint[];
   asOf: string;
 };
 
@@ -41,7 +37,6 @@ export type {
   AllStocksItem,
   AllStocksResponse,
   FavoriteChart,
-  FavoriteChartPoint,
   FavoriteStockItem,
   FavoriteStocksResponse,
 };
