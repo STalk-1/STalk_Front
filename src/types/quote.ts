@@ -7,7 +7,7 @@ export type QuoteData = {
 };
 
 export type QuoteUpdate = {
-  type: string;
+  type: 'QUOTE_UPDATED';
   symbol: string;
   data: QuoteData;
 };
