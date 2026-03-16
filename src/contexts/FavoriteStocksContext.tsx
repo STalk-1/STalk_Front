@@ -13,6 +13,9 @@ import {
   removeInterestStock,
 } from '@/apis/stocks/interest';
 import type { StockCardProps } from '@/components/common/StockCard/types';
+import { useStockChartSocket } from '@/hooks/useStockChartSocket';
+import { useStockSocket } from '@/hooks/useStockSocket';
+import type { QuoteData } from '@/types/quote';
 
 type FavoriteStocksContextValue = {
   favoriteItems: StockCardProps[];
@@ -34,6 +37,8 @@ const toStockCardItem = (
   price: item.quote.price,
   changeRate: item.quote.changeRate,
   change: item.quote.change,
+  direction: item.quote.direction,
+  chartPoints: item.chart?.points,
   liked: true,
 });
 
@@ -49,7 +54,7 @@ function FavoriteStocksProvider({ children }: { children: ReactNode }) {
     const fetchFavorites = async () => {
       try {
         const data = await getInterestStocks(controller.signal);
-        setFavoriteItems(data.items.map(toStockCardItem));
+        setFavoriteItems(data.items.map((item) => toStockCardItem(item)));
       } catch (error) {
         if (axios.isCancel(error) || controller.signal.aborted) {
           return;
@@ -72,6 +77,40 @@ function FavoriteStocksProvider({ children }: { children: ReactNode }) {
     [favoriteItems]
   );
 
+  const favoriteSymbolsList = useMemo(
+    () => favoriteItems.map((item) => item.symbol),
+    [favoriteItems]
+  );
+
+  useStockSocket(favoriteSymbolsList, (symbol, quote: QuoteData) => {
+    setFavoriteItems((prev) =>
+      prev.map((item) =>
+        item.symbol === symbol
+          ? {
+              ...item,
+              price: quote.price,
+              change: quote.change,
+              changeRate: quote.changeRate,
+              direction: quote.direction,
+            }
+          : item
+      )
+    );
+  });
+
+  useStockChartSocket(favoriteSymbolsList, (symbol, point) => {
+    setFavoriteItems((prev) =>
+      prev.map((item) =>
+        item.symbol === symbol
+          ? {
+              ...item,
+              chartPoints: [...(item.chartPoints ?? []), point],
+            }
+          : item
+      )
+    );
+  });
+
   const toggleFavorite = async (stock: StockCardProps) => {
     if (pendingBySymbol[stock.symbol]) {
       return;
@@ -87,7 +126,8 @@ function FavoriteStocksProvider({ children }: { children: ReactNode }) {
         );
       } else {
         await addInterestStock(stock.symbol);
-        setFavoriteItems((prev) => [...prev, { ...stock, liked: true }]);
+        const data = await getInterestStocks();
+        setFavoriteItems(data.items.map((item) => toStockCardItem(item)));
       }
     } catch (error) {
       console.error(
