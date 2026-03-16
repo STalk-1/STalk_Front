@@ -14,8 +14,11 @@ const router = createBrowserRouter([
       { index: true, element: <MainPage /> },
       { path: 'all-stocks', element: <AllStocksPage /> },
       { path: 'interest', element: <InterestStockPage /> },
-      { path: 'chat', element: <ChatPage /> },
     ],
+  },
+  {
+    path: '/chat',
+    element: <ChatPage />,
   },
 ]);
 

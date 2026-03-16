@@ -1,5 +1,6 @@
 import IcArrowDown from './ic-arrow-down.svg?react';
 import IcArrowUp from './ic-arrow-up.svg?react';
+import IcBack from './ic-back.svg?react';
 import IcBot from './ic-bot.svg?react';
 import IcCaretDown from './ic-caret-down.svg?react';
 import IcCaretUp from './ic-caret-up.svg?react';
@@ -17,6 +18,7 @@ import IcUsd from './ic-usd.svg?react';
 export {
   IcArrowDown,
   IcArrowUp,
+  IcBack,
   IcBot,
   IcCaretDown,
   IcCaretUp,
