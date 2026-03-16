@@ -47,6 +47,9 @@ export function useStockSocket(
             (message: IMessage) => {
               try {
                 const payload: QuoteUpdate = JSON.parse(message.body);
+                if (payload.type !== 'QUOTE_UPDATED') {
+                  return;
+                }
                 onUpdateRef.current(payload.symbol ?? symbol, payload.data);
               } catch {
                 // 형식이 잘못된 payload는 무시
@@ -93,6 +96,9 @@ export function useStockSocket(
           (message: IMessage) => {
             try {
               const payload: QuoteUpdate = JSON.parse(message.body);
+              if (payload.type !== 'QUOTE_UPDATED') {
+                return;
+              }
               onUpdateRef.current(payload.symbol ?? symbol, payload.data);
             } catch {
               // 형식이 잘못된 payload는 무시

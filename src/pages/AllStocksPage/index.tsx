@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { getAllStocks } from '@/apis/stocks/allStocks';
 import type { StockCardProps } from '@/components/common/StockCard/types';
 import StockListSection from '@/components/common/StockListSection';
+import { useStockSocket } from '@/hooks/useStockSocket';
 
 function AllStocksPage() {
   const [stocks, setStocks] = useState<StockCardProps[]>([]);
@@ -25,6 +26,7 @@ function AllStocksPage() {
             price: item.quote.price,
             changeRate: item.quote.changeRate,
             change: item.quote.change,
+            direction: item.quote.direction,
           }))
         );
       } catch {
@@ -42,6 +44,24 @@ function AllStocksPage() {
       mounted = false;
     };
   }, []);
+
+  const symbols = useMemo(() => stocks.map((stock) => stock.symbol), [stocks]);
+
+  useStockSocket(symbols, (symbol, quote) => {
+    setStocks((prev) =>
+      prev.map((item) =>
+        item.symbol === symbol
+          ? {
+              ...item,
+              price: quote.price,
+              change: quote.change,
+              changeRate: quote.changeRate,
+              direction: quote.direction,
+            }
+          : item
+      )
+    );
+  });
 
   return <StockListSection items={stocks} />;
 }
