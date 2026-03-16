@@ -1,4 +1,5 @@
 import { IcLike } from '@/assets/icons';
+import Chart, { CHART_COLORS } from '@/components/common/Chart';
 import DirectionToneText from '@/components/common/DirectionToneText';
 
 import { STOCK_CARD_LABELS } from './constants';
@@ -10,16 +11,19 @@ function StockCard({
   symbol,
   price,
   changeRate,
-  changeAmount,
+  change,
+  direction: directionProp,
+  chartPoints,
   liked = false,
   onLikeToggle,
+  isLikePending = false,
   detailsLabel = STOCK_CARD_LABELS.details,
   showChart = false,
 }: StockCardProps) {
   const direction =
-    changeRate > 0 ? 'UP' : changeRate < 0 ? 'DOWN' : 'FLAT';
+    directionProp ?? (changeRate > 0 ? 'UP' : changeRate < 0 ? 'DOWN' : 'FLAT');
   const signedPercent = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(changeRate).toLocaleString('ko-KR')}%`;
-  const signedWon = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(changeAmount).toLocaleString('ko-KR')}원`;
+  const signedWon = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(change).toLocaleString('ko-KR')}원`;
   const changeItems = [
     { value: signedPercent, label: STOCK_CARD_LABELS.monthChangeRate },
     { value: signedWon, label: STOCK_CARD_LABELS.dayChangeAmount },
@@ -57,21 +61,14 @@ function StockCard({
     </>
   );
 
+  const chartColor =
+    direction === 'DOWN' ? CHART_COLORS.down : CHART_COLORS.up;
   const chart = (
-    <svg
-      className="h-8 w-28 shrink-0 md:-translate-y-8 md:h-16"
-      viewBox="0 0 112 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <path
-        d="M1 20.5C11.214 20.5 14.93 22.13 24.376 23.5C38.892 25.604 47.694 25.468 59 20.5C68.07 16.514 74.542 10.171 85.188 8.19C90.323 7.235 95.125 7 111 7"
-        stroke="#EF4444"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
+    <Chart
+      points={chartPoints}
+      className="h-8 w-28 shrink-0 md:h-16 md:-translate-y-8"
+      strokeColor={chartColor}
+    />
   );
 
   return (
@@ -87,6 +84,7 @@ function StockCard({
           type="button"
           aria-label="관심 종목 토글"
           aria-pressed={liked}
+          disabled={isLikePending}
           onClick={onLikeToggle}
         >
           <IcLike

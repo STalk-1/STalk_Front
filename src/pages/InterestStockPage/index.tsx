@@ -1,8 +1,10 @@
 import StockListSection from '@/components/common/StockListSection';
-import { MOCK_STOCKS } from '@/pages/stocks/mockStocks';
+import { useFavoriteStocks } from '@/contexts/useFavoriteStocks';
 
 function InterestStockPage() {
-  return <StockListSection items={MOCK_STOCKS} showChart />;
+  const { favoriteItems } = useFavoriteStocks();
+
+  return <StockListSection items={favoriteItems} showChart removeOnUnlike />;
 }
 
 export default InterestStockPage;

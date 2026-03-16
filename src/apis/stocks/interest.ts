@@ -1,0 +1,21 @@
+import api from '@/apis/base/axios';
+import type { FavoriteStocksResponse } from '@/apis/stocks/types';
+
+const getInterestStocks = async (signal?: AbortSignal) => {
+  const { data } = await api.get<FavoriteStocksResponse>('/stocks/favorites', {
+    signal,
+  });
+  return data;
+};
+
+const addInterestStock = async (symbol: string) => {
+  const { data } = await api.post(`/stocks/favorites/${symbol}`);
+  return data;
+};
+
+const removeInterestStock = async (symbol: string) => {
+  const { data } = await api.delete(`/stocks/favorites/${symbol}`);
+  return data;
+};
+
+export { addInterestStock, getInterestStocks, removeInterestStock };
