@@ -9,6 +9,8 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
+import { cn } from '@/utils/cn';
+
 import type { ChartProps } from './types';
 
 ChartJS.register(
@@ -24,23 +26,12 @@ function Chart({ points, className, strokeColor = '#EF4444' }: ChartProps) {
   if (!points || points.length === 0) {
     return (
       <div
-        className={className}
-        style={{
-          width: 112,
-          height: 32,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#FFFFFF',
-          borderRadius: 8,
-        }}
+        className={cn(
+          'flex h-8 w-28 items-center justify-center rounded-lg bg-white',
+          className
+        )}
       >
-        <span
-          className="typo-10-regular"
-          style={{ color: '#9CA3AF', fontSize: 10 }}
-        >
-          차트 없음
-        </span>
+        <span className="typo-10-regular text-grey-400">차트 없음</span>
       </div>
     );
   }
@@ -91,7 +82,7 @@ function Chart({ points, className, strokeColor = '#EF4444' }: ChartProps) {
   };
 
   return (
-    <div className={className} style={{ width: 112, height: 32 }}>
+    <div className={cn('h-8 w-28', className)}>
       <Line data={data} options={options} />
     </div>
   );
