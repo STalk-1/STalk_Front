@@ -97,7 +97,7 @@ function ChatPage() {
 
   return (
     <main className="min-h-screen bg-white md:bg-[#f5f6f8]">
-      <section className="mx-auto flex min-h-screen w-full max-w-[768px] flex-col bg-white md:min-h-[100dvh] md:max-w-[720px]">
+      <section className="mx-auto flex min-h-screen w-full max-w-300 flex-col bg-white md:min-h-dvh">
         <div className="flex min-h-screen flex-1 flex-col bg-white">
           <ChatHeader
             title="삼성전자"
@@ -107,7 +107,7 @@ function ChatPage() {
             onBack={() => navigate(-1)}
           />
 
-          <section className="flex min-h-0 flex-1 flex-col pt-3 md:pt-4">
+          <section className="flex min-h-0 flex-1 flex-col px-2 pt-3 md:px-6 md:pt-4">
             <ChatMessageList
               messages={messages}
               messagesEndRef={messagesEndRef}
