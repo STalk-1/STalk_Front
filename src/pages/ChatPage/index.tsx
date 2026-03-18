@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import ChatHeader from '@/components/chat/Header';
@@ -63,35 +63,34 @@ function ChatPage() {
     });
   }, [messages]);
 
-  const nextId = useMemo(
-    () =>
-      messages.reduce((maxId, message) => Math.max(maxId, message.id), 0) + 1,
-    [messages]
-  );
-
   const handleSend = () => {
     const trimmed = input.trim();
     if (!trimmed) {
       return;
     }
 
-    const userMessage: ChatMessage = {
-      id: nextId,
-      sender: 'sender',
-      author: '나',
-      text: trimmed,
-      time: '10:25',
-    };
+    setMessages((prev) => {
+      const nextId =
+        prev.reduce((maxId, message) => Math.max(maxId, message.id), 0) + 1;
 
-    const botReply: ChatMessage = {
-      id: nextId + 1,
-      sender: 'sender',
-      author: 'S_jung',
-      text: QUICK_REPLIES[(nextId - 1) % QUICK_REPLIES.length],
-      time: '10:25',
-    };
+      const userMessage: ChatMessage = {
+        id: nextId,
+        sender: 'sender',
+        author: '나',
+        text: trimmed,
+        time: '10:25',
+      };
 
-    setMessages((prev) => [...prev, userMessage, botReply]);
+      const botReply: ChatMessage = {
+        id: nextId + 1,
+        sender: 'sender',
+        author: 'S_jung',
+        text: QUICK_REPLIES[(nextId - 1) % QUICK_REPLIES.length],
+        time: '10:25',
+      };
+
+      return [...prev, userMessage, botReply];
+    });
     setInput('');
   };
 
