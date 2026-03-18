@@ -1,4 +1,4 @@
-type ChatSender = 'bot' | 'user';
+type ChatSender = 'sender';
 
 type ChatMessage = {
   id: number;
