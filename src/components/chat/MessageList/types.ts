@@ -1,7 +1,7 @@
 type ChatSender = 'sender';
 
 type ChatMessage = {
-  id: number;
+  id: string;
   sender: ChatSender;
   text: string;
   time: string;
@@ -11,6 +11,7 @@ type ChatMessage = {
 type ChatMessageListProps = {
   messages: ChatMessage[];
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
+  currentUserName?: string | null;
 };
 
 export type { ChatMessage, ChatMessageListProps, ChatSender };
