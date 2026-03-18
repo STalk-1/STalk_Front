@@ -3,12 +3,18 @@ import { cn } from '@/utils/cn';
 
 import type { ChatMessageListProps } from './types';
 
-function ChatMessageList({ messages, messagesEndRef }: ChatMessageListProps) {
+function ChatMessageList({
+  messages,
+  messagesEndRef,
+  currentUserName,
+}: ChatMessageListProps) {
   return (
-    <div className="flex-1 overflow-y-auto px-2">
+    <div className="flex-1 overflow-y-auto px-2 md:px-6">
       <div className="space-y-5 pb-4">
         {messages.map((message) => {
-          const isMine = message.author === '나';
+          const isMine = Boolean(
+            currentUserName && message.author === currentUserName
+          );
 
           return (
             <article
