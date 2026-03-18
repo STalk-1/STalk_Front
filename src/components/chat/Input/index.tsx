@@ -6,7 +6,7 @@ function ChatInput({ value, onChange, onSubmit, placeholder }: ChatInputProps) {
   return (
     <div className="bg-grey-50 mt-auto shrink-0 px-4 pt-3 pb-4 md:px-6 md:pt-4 md:pb-5">
       <form
-        className="flex w-full items-center gap-2 rounded-2xl bg-white px-3 py-2 shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
+        className="flex w-full items-center gap-2 rounded-2xl bg-white px-3 py-2 shadow-xl"
         onSubmit={(event) => {
           event.preventDefault();
           onSubmit();
