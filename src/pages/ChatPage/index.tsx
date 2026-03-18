@@ -9,35 +9,35 @@ import type { ChatMessage } from '@/components/chat/MessageList/types';
 const INITIAL_MESSAGES: ChatMessage[] = [
   {
     id: 1,
-    sender: 'bot',
+    sender: 'sender',
     author: 'S_jung',
     text: '실시간 채팅중 실시간 채팅중',
     time: '10:25',
   },
   {
     id: 2,
-    sender: 'bot',
+    sender: 'sender',
     author: 'S_jung',
     text: '실시간 채팅중 실시간 채팅중',
     time: '10:25',
   },
   {
     id: 3,
-    sender: 'user',
+    sender: 'sender',
     author: '나',
     text: '실시간 채팅중 실시간 채팅중',
     time: '10:25',
   },
   {
     id: 4,
-    sender: 'user',
+    sender: 'sender',
     author: '나',
     text: '실시간 채팅중 실시간 채팅중',
     time: '10:25',
   },
   {
     id: 5,
-    sender: 'bot',
+    sender: 'sender',
     author: 'S_jung',
     text: '실시간 채팅중 실시간 채팅중실시간채팅중 실시간채팅중',
     time: '10:25',
@@ -77,7 +77,7 @@ function ChatPage() {
 
     const userMessage: ChatMessage = {
       id: nextId,
-      sender: 'user',
+      sender: 'sender',
       author: '나',
       text: trimmed,
       time: '10:25',
@@ -85,7 +85,7 @@ function ChatPage() {
 
     const botReply: ChatMessage = {
       id: nextId + 1,
-      sender: 'bot',
+      sender: 'sender',
       author: 'S_jung',
       text: QUICK_REPLIES[(nextId - 1) % QUICK_REPLIES.length],
       time: '10:25',
