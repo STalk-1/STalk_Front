@@ -20,6 +20,10 @@ const router = createBrowserRouter([
     path: '/chat',
     element: <ChatPage />,
   },
+  {
+    path: '/chat/:symbol',
+    element: <ChatPage />,
+  },
 ]);
 
 export default router;
