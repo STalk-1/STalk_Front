@@ -40,7 +40,7 @@ function ChatMessageList({ messages, messagesEndRef }: ChatMessageListProps) {
                 >
                   <div
                     className={cn(
-                      'min-h-8 rounded-2xl px-3 py-2 shadow-[0_6px_18px_rgba(15,23,42,0.06)]',
+                      'min-h-8 rounded-2xl px-3 py-2 shadow-xl',
                       isUser
                         ? 'rounded-tr-sm bg-green-500 text-white'
                         : 'bg-grey-50 text-grey-900 rounded-tl-sm'
