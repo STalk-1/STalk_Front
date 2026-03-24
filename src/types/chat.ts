@@ -12,4 +12,9 @@ type ChatMessagePayload = {
   sentAt: string;
 };
 
-export type { ChatMessagePayload, ChatSendPayload };
+type ChatCountPayload = {
+  symbol: string;
+  count: number;
+};
+
+export type { ChatCountPayload, ChatMessagePayload, ChatSendPayload };

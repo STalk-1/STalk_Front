@@ -3,18 +3,76 @@ import { Client } from '@stomp/stompjs';
 import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 
-import type { ChatMessagePayload, ChatSendPayload } from '@/types/chat';
+import type {
+  ChatCountPayload,
+  ChatMessagePayload,
+  ChatSendPayload,
+} from '@/types/chat';
 
 const CHAT_WS_BROKER = import.meta.env.VITE_STOCK_WS_BROKER;
 const RECONNECT_DELAY = 5000;
 const HEARTBEAT_OUTGOING_INTERVAL = 20000;
 
 type OnChatMessage = (payload: ChatMessagePayload) => void;
+type OnChatCount = (payload: ChatCountPayload) => void;
 
-function useChatSocket(symbol: string, onMessage: OnChatMessage) {
+const isChatCountPayload = (payload: unknown): payload is ChatCountPayload => {
+  if (!payload || typeof payload !== 'object') {
+    return false;
+  }
+
+  const candidate = payload as Partial<ChatCountPayload>;
+  return (
+    typeof candidate.symbol === 'string' && typeof candidate.count === 'number'
+  );
+};
+
+const parseChatCountPayload = (
+  body: string,
+  symbol: string
+): ChatCountPayload | null => {
+  try {
+    const parsed = JSON.parse(body) as unknown;
+
+    if (typeof parsed === 'number') {
+      return { symbol, count: parsed };
+    }
+
+    if (isChatCountPayload(parsed)) {
+      return parsed;
+    }
+
+    if (
+      parsed &&
+      typeof parsed === 'object' &&
+      'count' in parsed &&
+      typeof (parsed as { count?: unknown }).count === 'number'
+    ) {
+      return {
+        symbol,
+        count: (parsed as { count: number }).count,
+      };
+    }
+  } catch {
+    const numericCount = Number(body);
+    if (Number.isFinite(numericCount)) {
+      return { symbol, count: numericCount };
+    }
+  }
+
+  return null;
+};
+
+function useChatSocket(
+  symbol: string,
+  onMessage: OnChatMessage,
+  onCount?: OnChatCount
+) {
   const clientRef = useRef<Client | null>(null);
-  const subscriptionRef = useRef<StompSubscription | null>(null);
+  const messageSubscriptionRef = useRef<StompSubscription | null>(null);
+  const countSubscriptionRef = useRef<StompSubscription | null>(null);
   const onMessageRef = useRef(onMessage);
+  const onCountRef = useRef(onCount);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
@@ -22,16 +80,26 @@ function useChatSocket(symbol: string, onMessage: OnChatMessage) {
   }, [onMessage]);
 
   useEffect(() => {
+    onCountRef.current = onCount;
+  }, [onCount]);
+
+  useEffect(() => {
     const client = new Client({
       webSocketFactory: () => new SockJS(CHAT_WS_BROKER),
       reconnectDelay: RECONNECT_DELAY,
       heartbeatIncoming: 0,
       heartbeatOutgoing: HEARTBEAT_OUTGOING_INTERVAL,
+      debug: (message: string) => {
+        console.log('[chat-stomp]', { symbol, message });
+      },
     });
 
     const subscribeToRoom = () => {
-      subscriptionRef.current?.unsubscribe();
-      subscriptionRef.current = client.subscribe(
+      messageSubscriptionRef.current?.unsubscribe();
+      countSubscriptionRef.current?.unsubscribe();
+
+      console.log('[chat-socket] subscribe message topic', `/sub/chat.${symbol}`);
+      messageSubscriptionRef.current = client.subscribe(
         `/sub/chat.${symbol}`,
         (message: IMessage) => {
           try {
@@ -53,18 +121,50 @@ function useChatSocket(symbol: string, onMessage: OnChatMessage) {
           }
         }
       );
+
+      console.log(
+        '[chat-socket] subscribe count topic',
+        `/sub/chat.${symbol}.count`
+      );
+      countSubscriptionRef.current = client.subscribe(
+        `/sub/chat.${symbol}.count`,
+        (message: IMessage) => {
+          console.log('[chat-socket] raw count message', {
+            symbol,
+            body: message.body,
+          });
+          const payload = parseChatCountPayload(message.body, symbol);
+          if (!payload) {
+            console.log('[chat-socket] count payload parse failed', {
+              symbol,
+              body: message.body,
+            });
+            return;
+          }
+
+          console.log('[chat-socket] parsed count payload', payload);
+          onCountRef.current?.(payload);
+        }
+      );
     };
 
     client.onConnect = () => {
+      console.log('[chat-socket] connected', { symbol });
       setIsConnected(true);
       subscribeToRoom();
     };
 
     client.onDisconnect = () => {
+      console.log('[chat-socket] disconnected', { symbol });
       setIsConnected(false);
     };
 
-    client.onStompError = () => {
+    client.onStompError = (frame) => {
+      console.log('[chat-socket] stomp error', {
+        symbol,
+        headers: frame.headers,
+        body: frame.body,
+      });
       setIsConnected(false);
     };
 
@@ -72,8 +172,10 @@ function useChatSocket(symbol: string, onMessage: OnChatMessage) {
     clientRef.current = client;
 
     return () => {
-      subscriptionRef.current?.unsubscribe();
-      subscriptionRef.current = null;
+      messageSubscriptionRef.current?.unsubscribe();
+      countSubscriptionRef.current?.unsubscribe();
+      messageSubscriptionRef.current = null;
+      countSubscriptionRef.current = null;
       setIsConnected(false);
       client.deactivate();
     };
