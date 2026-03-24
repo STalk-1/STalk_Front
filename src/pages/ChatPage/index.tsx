@@ -8,32 +8,54 @@ import ChatInput from '@/components/chat/Input';
 import ChatMessageList from '@/components/chat/MessageList';
 import type { ChatMessage } from '@/components/chat/MessageList/types';
 import { useChatSocket } from '@/hooks/useChatSocket';
+import { MOCK_STOCKS } from '@/pages/stocks/mockStocks';
 import type { ChatMessagePayload } from '@/types/chat';
 
 const DEFAULT_CHAT_ROOM = {
   symbol: '005930',
   name: '삼성전자',
   market: 'KOSPI',
-  count: 12,
+  count: 0,
 };
 const EMPTY_MESSAGES: ChatMessage[] = [];
+
+const getFallbackChatRoom = (symbol: string) => {
+  const stock = MOCK_STOCKS.find((item) => item.symbol === symbol);
+
+  if (!stock) {
+    return {
+      symbol,
+      name: symbol,
+      market: DEFAULT_CHAT_ROOM.market,
+      count: DEFAULT_CHAT_ROOM.count,
+    };
+  }
+
+  return {
+    symbol: stock.symbol,
+    name: stock.name,
+    market: stock.market,
+    count: DEFAULT_CHAT_ROOM.count,
+  };
+};
 
 function ChatPage() {
   const navigate = useNavigate();
   const { symbol: symbolParam } = useParams();
+  const symbol = symbolParam ?? DEFAULT_CHAT_ROOM.symbol;
+  const fallbackRoom = getFallbackChatRoom(symbol);
   const [messagesBySymbol, setMessagesBySymbol] = useState<
     Record<string, ChatMessage[]>
   >({});
   const [input, setInput] = useState('');
   const [currentUserName, setCurrentUserName] = useState<string | null>(null);
   const [roomInfo, setRoomInfo] = useState({
-    symbol: DEFAULT_CHAT_ROOM.symbol,
-    name: DEFAULT_CHAT_ROOM.name,
-    market: DEFAULT_CHAT_ROOM.market,
+    symbol: fallbackRoom.symbol,
+    name: fallbackRoom.name,
+    market: fallbackRoom.market,
   });
-  const [audienceCount, setAudienceCount] = useState(DEFAULT_CHAT_ROOM.count);
+  const [audienceCount, setAudienceCount] = useState(fallbackRoom.count);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const symbol = symbolParam ?? DEFAULT_CHAT_ROOM.symbol;
   const messages = messagesBySymbol[symbol] ?? EMPTY_MESSAGES;
   const { isConnected, sendMessage } = useChatSocket(
     symbol,
@@ -60,6 +82,13 @@ function ChatPage() {
           ],
         };
       });
+    },
+    (payload) => {
+      if (payload.symbol !== symbol) {
+        return;
+      }
+
+      setAudienceCount(payload.count);
     }
   );
 
@@ -118,12 +147,14 @@ function ChatPage() {
           return;
         }
 
+        const nextFallbackRoom = getFallbackChatRoom(symbol);
+
         setRoomInfo({
-          symbol: DEFAULT_CHAT_ROOM.symbol,
-          name: DEFAULT_CHAT_ROOM.name,
-          market: DEFAULT_CHAT_ROOM.market,
+          symbol: nextFallbackRoom.symbol,
+          name: nextFallbackRoom.name,
+          market: nextFallbackRoom.market,
         });
-        setAudienceCount(DEFAULT_CHAT_ROOM.count);
+        setAudienceCount(nextFallbackRoom.count);
       }
     };
 
@@ -155,7 +186,7 @@ function ChatPage() {
     <main className="min-h-screen bg-white md:bg-[#f5f6f8]">
       <section className="mx-auto flex min-h-screen w-full max-w-300 flex-col bg-white md:min-h-dvh">
         <div className="flex min-h-screen flex-1 flex-col bg-white">
-            <ChatHeader
+          <ChatHeader
             title={roomInfo.name}
             subtitle={`${roomInfo.market} ${roomInfo.symbol}`}
             statusLabel={isConnected ? '실시간 채팅' : '채팅 연결 중'}
@@ -173,7 +204,7 @@ function ChatPage() {
               value={input}
               onChange={setInput}
               onSubmit={handleSend}
-              placeholder="삼성전자에 대한 의견을 공유하세요."
+              placeholder={`${roomInfo.name}에 대한 의견을 공유하세요.`}
             />
           </section>
         </div>
