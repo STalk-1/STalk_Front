@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 import { IcLike } from '@/assets/icons';
 import Chart, { CHART_COLORS } from '@/components/common/Chart';
 import DirectionToneText from '@/components/common/DirectionToneText';
@@ -20,6 +22,7 @@ function StockCard({
   detailsLabel = STOCK_CARD_LABELS.details,
   showChart = false,
 }: StockCardProps) {
+  const navigate = useNavigate();
   const direction =
     directionProp ?? (changeRate > 0 ? 'UP' : changeRate < 0 ? 'DOWN' : 'FLAT');
   const signedPercent = `${changeRate > 0 ? '+' : changeRate < 0 ? '-' : ''}${Math.abs(changeRate).toLocaleString('ko-KR')}%`;
@@ -71,6 +74,10 @@ function StockCard({
     />
   );
 
+  const handleOpenCommunity = () => {
+    navigate(`/chat/${symbol}`);
+  };
+
   return (
     <article className="w-full rounded-xl bg-white px-5 py-5 shadow-lg">
       <div className="mb-4 flex items-start justify-between">
@@ -105,7 +112,11 @@ function StockCard({
 
         <div className="mt-3 flex items-end justify-between gap-4">
           <div className="flex items-end gap-5">{changeItemsBlock}</div>
-          <button className="typo-10-regular text-grey-500 pb-1" type="button">
+          <button
+            className="typo-10-regular text-grey-500 pb-1"
+            type="button"
+            onClick={handleOpenCommunity}
+          >
             {detailsLabel}
           </button>
         </div>
@@ -119,7 +130,11 @@ function StockCard({
 
         <div className="flex items-end gap-3">
           {showChart ? chart : null}
-          <button className="typo-10-regular text-grey-500 pb-1" type="button">
+          <button
+            className="typo-10-regular text-grey-500 pb-1"
+            type="button"
+            onClick={handleOpenCommunity}
+          >
             {detailsLabel}
           </button>
         </div>
