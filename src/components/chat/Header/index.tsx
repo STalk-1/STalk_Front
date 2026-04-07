@@ -10,7 +10,7 @@ function ChatHeader({
   onBack,
 }: ChatHeaderProps) {
   return (
-    <header className="shrink-0 px-4 pt-4 pb-3 md:px-6 md:pt-5 md:pb-4">
+    <header className="sticky top-0 z-20 shrink-0 bg-white px-4 pt-4 pb-3 md:px-6 md:pt-5 md:pb-4">
       <div className="flex items-start gap-3">
         <button
           type="button"
