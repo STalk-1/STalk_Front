@@ -1,8 +1,13 @@
 import { IcSend } from '@/assets/icons';
 
-import type { ChatInputProps } from './types';
+import type { ChatFooterProps } from './types';
 
-function ChatInput({ value, onChange, onSubmit, placeholder }: ChatInputProps) {
+function ChatFooter({
+  value,
+  onChange,
+  onSubmit,
+  placeholder,
+}: ChatFooterProps) {
   return (
     <div className="bg-grey-50 sticky bottom-0 z-10 shrink-0 px-4 pt-3 pb-4 md:px-6 md:pt-4 md:pb-5">
       <form
@@ -31,4 +36,4 @@ function ChatInput({ value, onChange, onSubmit, placeholder }: ChatInputProps) {
   );
 }
 
-export default ChatInput;
+export default ChatFooter;

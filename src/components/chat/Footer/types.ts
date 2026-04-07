@@ -1,8 +1,8 @@
-type ChatInputProps = {
+type ChatFooterProps = {
   value: string;
   onChange: (value: string) => void;
   onSubmit: () => void;
   placeholder: string;
 };
 
-export type { ChatInputProps };
+export type { ChatFooterProps };
