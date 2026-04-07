@@ -33,8 +33,8 @@ const getFallbackChatRoom = (symbol: string) => ({
 
 function ChatPage() {
   const navigate = useNavigate();
-  const { symbol: symbolParam } = useParams();
-  const symbol = symbolParam ?? '';
+  const { symbol: rawSymbolParam } = useParams();
+  const symbol = rawSymbolParam?.match(/^\d+/)?.[0] ?? rawSymbolParam ?? '';
   const fallbackRoom = getFallbackChatRoom(symbol);
   const [messagesBySymbol, setMessagesBySymbol] = useState<
     Record<string, ChatMessage[]>
