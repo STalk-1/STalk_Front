@@ -9,7 +9,7 @@ function ChatMessageList({
   currentUserName,
 }: ChatMessageListProps) {
   return (
-    <div className="flex-1 overflow-y-auto px-2 md:px-6">
+    <div className="flex-1 min-h-0 overflow-y-auto px-2 md:px-6">
       <div className="space-y-5 pb-4">
         {messages.map((message) => {
           const isMine = Boolean(

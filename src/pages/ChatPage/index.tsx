@@ -1,48 +1,40 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { getChatRoomCount, getChatRoomInfo } from '@/apis/chat/chat';
+import {
+  getChatRoomCount,
+  getChatRoomHistory,
+  getChatRoomInfo,
+} from '@/apis/chat/chat';
 import { getMe } from '@/apis/users/me';
+import ChatFooter from '@/components/chat/Footer';
 import ChatHeader from '@/components/chat/Header';
-import ChatInput from '@/components/chat/Input';
 import ChatMessageList from '@/components/chat/MessageList';
 import type { ChatMessage } from '@/components/chat/MessageList/types';
 import { useChatSocket } from '@/hooks/useChatSocket';
-import { MOCK_STOCKS } from '@/pages/stocks/mockStocks';
 import type { ChatMessagePayload } from '@/types/chat';
 
-const DEFAULT_CHAT_ROOM = {
-  symbol: '005930',
-  name: '삼성전자',
-  market: 'KOSPI',
-  count: 0,
-};
 const EMPTY_MESSAGES: ChatMessage[] = [];
 
-const getFallbackChatRoom = (symbol: string) => {
-  const stock = MOCK_STOCKS.find((item) => item.symbol === symbol);
+const getChatMessageFromPayload = (payload: ChatMessagePayload): ChatMessage => ({
+  id: payload.messageId,
+  sender: 'sender',
+  text: payload.content,
+  time: payload.sentAt,
+  author: payload.sender,
+});
 
-  if (!stock) {
-    return {
-      symbol,
-      name: symbol,
-      market: DEFAULT_CHAT_ROOM.market,
-      count: DEFAULT_CHAT_ROOM.count,
-    };
-  }
-
-  return {
-    symbol: stock.symbol,
-    name: stock.name,
-    market: stock.market,
-    count: DEFAULT_CHAT_ROOM.count,
-  };
-};
+const getFallbackChatRoom = (symbol: string) => ({
+  symbol,
+  name: symbol,
+  market: '',
+  count: 0,
+});
 
 function ChatPage() {
   const navigate = useNavigate();
   const { symbol: symbolParam } = useParams();
-  const symbol = symbolParam ?? DEFAULT_CHAT_ROOM.symbol;
+  const symbol = symbolParam ?? '';
   const fallbackRoom = getFallbackChatRoom(symbol);
   const [messagesBySymbol, setMessagesBySymbol] = useState<
     Record<string, ChatMessage[]>
@@ -57,6 +49,19 @@ function ChatPage() {
   const [audienceCount, setAudienceCount] = useState(fallbackRoom.count);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const messages = messagesBySymbol[symbol] ?? EMPTY_MESSAGES;
+  const applyFallbackState = (targetSymbol: string) => {
+    const fallback = getFallbackChatRoom(targetSymbol);
+    setRoomInfo({
+      symbol: fallback.symbol,
+      name: fallback.name,
+      market: fallback.market,
+    });
+    setAudienceCount(fallback.count);
+    setMessagesBySymbol((prev) => ({
+      ...prev,
+      [targetSymbol]: [],
+    }));
+  };
   const { isConnected, sendMessage } = useChatSocket(
     symbol,
     (payload: ChatMessagePayload) => {
@@ -130,10 +135,16 @@ function ChatPage() {
     let mounted = true;
 
     const fetchChatRoomMeta = async () => {
+      if (!symbol) {
+        applyFallbackState(symbol);
+        return;
+      }
+
       try {
-        const [info, count] = await Promise.all([
+        const [info, count, history] = await Promise.all([
           getChatRoomInfo(symbol),
           getChatRoomCount(symbol),
+          getChatRoomHistory(symbol),
         ]);
 
         if (!mounted) {
@@ -142,19 +153,16 @@ function ChatPage() {
 
         setRoomInfo(info);
         setAudienceCount(count.count);
+        setMessagesBySymbol((prev) => ({
+          ...prev,
+          [symbol]: history.map(getChatMessageFromPayload),
+        }));
       } catch {
         if (!mounted) {
           return;
         }
 
-        const nextFallbackRoom = getFallbackChatRoom(symbol);
-
-        setRoomInfo({
-          symbol: nextFallbackRoom.symbol,
-          name: nextFallbackRoom.name,
-          market: nextFallbackRoom.market,
-        });
-        setAudienceCount(nextFallbackRoom.count);
+        applyFallbackState(symbol);
       }
     };
 
@@ -200,7 +208,7 @@ function ChatPage() {
               messagesEndRef={messagesEndRef}
               currentUserName={currentUserName}
             />
-            <ChatInput
+            <ChatFooter
               value={input}
               onChange={setInput}
               onSubmit={handleSend}
