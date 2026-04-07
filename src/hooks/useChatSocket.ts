@@ -89,7 +89,6 @@ function useChatSocket(
       reconnectDelay: RECONNECT_DELAY,
       heartbeatIncoming: 0,
       heartbeatOutgoing: HEARTBEAT_OUTGOING_INTERVAL,
-      debug: undefined,
     });
 
     const subscribeToRoom = () => {
