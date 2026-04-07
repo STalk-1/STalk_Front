@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { getChatRoomCount, getChatRoomInfo } from '@/apis/chat/chat';
 import { getMe } from '@/apis/users/me';
+import ChatFooter from '@/components/chat/Footer';
 import ChatHeader from '@/components/chat/Header';
-import ChatInput from '@/components/chat/Input';
 import ChatMessageList from '@/components/chat/MessageList';
 import type { ChatMessage } from '@/components/chat/MessageList/types';
 import { useChatSocket } from '@/hooks/useChatSocket';
@@ -180,7 +180,7 @@ function ChatPage() {
               messagesEndRef={messagesEndRef}
               currentUserName={currentUserName}
             />
-            <ChatInput
+            <ChatFooter
               value={input}
               onChange={setInput}
               onSubmit={handleSend}
