@@ -8,41 +8,21 @@ import ChatInput from '@/components/chat/Input';
 import ChatMessageList from '@/components/chat/MessageList';
 import type { ChatMessage } from '@/components/chat/MessageList/types';
 import { useChatSocket } from '@/hooks/useChatSocket';
-import { MOCK_STOCKS } from '@/pages/stocks/mockStocks';
 import type { ChatMessagePayload } from '@/types/chat';
 
-const DEFAULT_CHAT_ROOM = {
-  symbol: '005930',
-  name: '삼성전자',
-  market: 'KOSPI',
-  count: 0,
-};
 const EMPTY_MESSAGES: ChatMessage[] = [];
 
-const getFallbackChatRoom = (symbol: string) => {
-  const stock = MOCK_STOCKS.find((item) => item.symbol === symbol);
-
-  if (!stock) {
-    return {
-      symbol,
-      name: symbol,
-      market: DEFAULT_CHAT_ROOM.market,
-      count: DEFAULT_CHAT_ROOM.count,
-    };
-  }
-
-  return {
-    symbol: stock.symbol,
-    name: stock.name,
-    market: stock.market,
-    count: DEFAULT_CHAT_ROOM.count,
-  };
-};
+const getFallbackChatRoom = (symbol: string) => ({
+  symbol,
+  name: symbol,
+  market: '',
+  count: 0,
+});
 
 function ChatPage() {
   const navigate = useNavigate();
   const { symbol: symbolParam } = useParams();
-  const symbol = symbolParam ?? DEFAULT_CHAT_ROOM.symbol;
+  const symbol = symbolParam ?? '';
   const fallbackRoom = getFallbackChatRoom(symbol);
   const [messagesBySymbol, setMessagesBySymbol] = useState<
     Record<string, ChatMessage[]>
