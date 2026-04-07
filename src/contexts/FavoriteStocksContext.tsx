@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { isCancel } from 'axios';
 import {
   createContext,
   type ReactNode,
@@ -56,11 +56,10 @@ function FavoriteStocksProvider({ children }: { children: ReactNode }) {
         const data = await getInterestStocks(controller.signal);
         setFavoriteItems(data.items.map((item) => toStockCardItem(item)));
       } catch (error) {
-        if (axios.isCancel(error) || controller.signal.aborted) {
+        if (isCancel(error) || controller.signal.aborted) {
           return;
         }
 
-        console.error('관심 종목 조회 실패', error);
         setFavoriteItems([]);
       }
     };
@@ -129,13 +128,8 @@ function FavoriteStocksProvider({ children }: { children: ReactNode }) {
         const data = await getInterestStocks();
         setFavoriteItems(data.items.map((item) => toStockCardItem(item)));
       }
-    } catch (error) {
-      console.error(
-        favoriteSymbols.has(stock.symbol)
-          ? '관심 종목 해제 실패'
-          : '관심 종목 등록 실패',
-        error
-      );
+    } catch {
+      // ignore toggle errors
     } finally {
       setPendingBySymbol((prev) => ({ ...prev, [stock.symbol]: false }));
     }

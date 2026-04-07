@@ -89,16 +89,13 @@ function useChatSocket(
       reconnectDelay: RECONNECT_DELAY,
       heartbeatIncoming: 0,
       heartbeatOutgoing: HEARTBEAT_OUTGOING_INTERVAL,
-      debug: (message: string) => {
-        console.log('[chat-stomp]', { symbol, message });
-      },
+      debug: undefined,
     });
 
     const subscribeToRoom = () => {
       messageSubscriptionRef.current?.unsubscribe();
       countSubscriptionRef.current?.unsubscribe();
 
-      console.log('[chat-socket] subscribe message topic', `/sub/chat.${symbol}`);
       messageSubscriptionRef.current = client.subscribe(
         `/sub/chat.${symbol}`,
         (message: IMessage) => {
@@ -122,49 +119,29 @@ function useChatSocket(
         }
       );
 
-      console.log(
-        '[chat-socket] subscribe count topic',
-        `/sub/chat.${symbol}.count`
-      );
       countSubscriptionRef.current = client.subscribe(
         `/sub/chat.${symbol}.count`,
         (message: IMessage) => {
-          console.log('[chat-socket] raw count message', {
-            symbol,
-            body: message.body,
-          });
           const payload = parseChatCountPayload(message.body, symbol);
           if (!payload) {
-            console.log('[chat-socket] count payload parse failed', {
-              symbol,
-              body: message.body,
-            });
             return;
           }
 
-          console.log('[chat-socket] parsed count payload', payload);
           onCountRef.current?.(payload);
         }
       );
     };
 
     client.onConnect = () => {
-      console.log('[chat-socket] connected', { symbol });
       setIsConnected(true);
       subscribeToRoom();
     };
 
     client.onDisconnect = () => {
-      console.log('[chat-socket] disconnected', { symbol });
       setIsConnected(false);
     };
 
-    client.onStompError = (frame) => {
-      console.log('[chat-socket] stomp error', {
-        symbol,
-        headers: frame.headers,
-        body: frame.body,
-      });
+    client.onStompError = () => {
       setIsConnected(false);
     };
 

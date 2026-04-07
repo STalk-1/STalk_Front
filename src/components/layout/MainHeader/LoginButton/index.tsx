@@ -15,8 +15,7 @@ function LoginButton() {
     try {
       const loginUrl = await getKakaoLoginUrl();
       window.location.href = loginUrl;
-    } catch (error) {
-      console.error('카카오 로그인 URL 조회 실패', error);
+    } catch {
       setIsLoading(false);
     }
   };

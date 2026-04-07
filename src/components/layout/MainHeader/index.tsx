@@ -20,12 +20,11 @@ function Header() {
         }
 
         setDisplayName(me.nickname || null);
-      } catch (error) {
+      } catch {
         if (!mounted) {
           return;
         }
 
-        console.error('사용자 정보 조회에 실패했습니다:', error);
         setDisplayName(null);
       }
     };
