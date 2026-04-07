@@ -49,6 +49,19 @@ function ChatPage() {
   const [audienceCount, setAudienceCount] = useState(fallbackRoom.count);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const messages = messagesBySymbol[symbol] ?? EMPTY_MESSAGES;
+  const applyFallbackState = (targetSymbol: string) => {
+    const fallback = getFallbackChatRoom(targetSymbol);
+    setRoomInfo({
+      symbol: fallback.symbol,
+      name: fallback.name,
+      market: fallback.market,
+    });
+    setAudienceCount(fallback.count);
+    setMessagesBySymbol((prev) => ({
+      ...prev,
+      [targetSymbol]: [],
+    }));
+  };
   const { isConnected, sendMessage } = useChatSocket(
     symbol,
     (payload: ChatMessagePayload) => {
@@ -123,17 +136,7 @@ function ChatPage() {
 
     const fetchChatRoomMeta = async () => {
       if (!symbol) {
-        const nextFallbackRoom = getFallbackChatRoom(symbol);
-        setRoomInfo({
-          symbol: nextFallbackRoom.symbol,
-          name: nextFallbackRoom.name,
-          market: nextFallbackRoom.market,
-        });
-        setAudienceCount(nextFallbackRoom.count);
-        setMessagesBySymbol((prev) => ({
-          ...prev,
-          [symbol]: [],
-        }));
+        applyFallbackState(symbol);
         return;
       }
 
@@ -159,18 +162,7 @@ function ChatPage() {
           return;
         }
 
-        const nextFallbackRoom = getFallbackChatRoom(symbol);
-
-        setRoomInfo({
-          symbol: nextFallbackRoom.symbol,
-          name: nextFallbackRoom.name,
-          market: nextFallbackRoom.market,
-        });
-        setAudienceCount(nextFallbackRoom.count);
-        setMessagesBySymbol((prev) => ({
-          ...prev,
-          [symbol]: [],
-        }));
+        applyFallbackState(symbol);
       }
     };
 
