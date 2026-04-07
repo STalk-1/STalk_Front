@@ -1,4 +1,5 @@
 import api from '@/apis/base/axios';
+import type { ChatMessagePayload } from '@/types/chat';
 
 import type { ChatApiResponse, ChatRoomCount, ChatRoomInfo } from './types';
 
@@ -16,4 +17,11 @@ const getChatRoomCount = async (symbol: string) => {
   return data.data;
 };
 
-export { getChatRoomCount, getChatRoomInfo };
+const getChatRoomHistory = async (symbol: string) => {
+  const { data } = await api.get<ChatApiResponse<ChatMessagePayload[]>>(
+    `/chat/rooms/${symbol}/history`
+  );
+  return data.data;
+};
+
+export { getChatRoomCount, getChatRoomHistory, getChatRoomInfo };
