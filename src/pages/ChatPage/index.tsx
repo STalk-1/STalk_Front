@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { getChatRoomCount, getChatRoomInfo } from '@/apis/chat/chat';
+import {
+  getChatRoomCount,
+  getChatRoomHistory,
+  getChatRoomInfo,
+} from '@/apis/chat/chat';
 import { getMe } from '@/apis/users/me';
 import ChatFooter from '@/components/chat/Footer';
 import ChatHeader from '@/components/chat/Header';
@@ -11,6 +15,14 @@ import { useChatSocket } from '@/hooks/useChatSocket';
 import type { ChatMessagePayload } from '@/types/chat';
 
 const EMPTY_MESSAGES: ChatMessage[] = [];
+
+const getChatMessageFromPayload = (payload: ChatMessagePayload): ChatMessage => ({
+  id: payload.messageId,
+  sender: 'sender',
+  text: payload.content,
+  time: payload.sentAt,
+  author: payload.sender,
+});
 
 const getFallbackChatRoom = (symbol: string) => ({
   symbol,
@@ -110,10 +122,26 @@ function ChatPage() {
     let mounted = true;
 
     const fetchChatRoomMeta = async () => {
+      if (!symbol) {
+        const nextFallbackRoom = getFallbackChatRoom(symbol);
+        setRoomInfo({
+          symbol: nextFallbackRoom.symbol,
+          name: nextFallbackRoom.name,
+          market: nextFallbackRoom.market,
+        });
+        setAudienceCount(nextFallbackRoom.count);
+        setMessagesBySymbol((prev) => ({
+          ...prev,
+          [symbol]: [],
+        }));
+        return;
+      }
+
       try {
-        const [info, count] = await Promise.all([
+        const [info, count, history] = await Promise.all([
           getChatRoomInfo(symbol),
           getChatRoomCount(symbol),
+          getChatRoomHistory(symbol),
         ]);
 
         if (!mounted) {
@@ -122,6 +150,10 @@ function ChatPage() {
 
         setRoomInfo(info);
         setAudienceCount(count.count);
+        setMessagesBySymbol((prev) => ({
+          ...prev,
+          [symbol]: history.map(getChatMessageFromPayload),
+        }));
       } catch {
         if (!mounted) {
           return;
@@ -135,6 +167,10 @@ function ChatPage() {
           market: nextFallbackRoom.market,
         });
         setAudienceCount(nextFallbackRoom.count);
+        setMessagesBySymbol((prev) => ({
+          ...prev,
+          [symbol]: [],
+        }));
       }
     };
 
