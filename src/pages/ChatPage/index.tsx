@@ -11,6 +11,7 @@ import ChatFooter from '@/components/chat/Footer';
 import ChatHeader from '@/components/chat/Header';
 import ChatMessageList from '@/components/chat/MessageList';
 import type { ChatMessage } from '@/components/chat/MessageList/types';
+import { Loading } from '@/components/common/Loading';
 import { useChatSocket } from '@/hooks/useChatSocket';
 import type { ChatMessagePayload } from '@/types/chat';
 
@@ -49,6 +50,7 @@ function ChatPage() {
     market: fallbackRoom.market,
   });
   const [audienceCount, setAudienceCount] = useState(fallbackRoom.count);
+  const [isRoomInfoLoading, setIsRoomInfoLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const messages = messagesBySymbol[symbol] ?? EMPTY_MESSAGES;
   const applyFallbackState = (targetSymbol: string) => {
@@ -143,6 +145,10 @@ function ChatPage() {
       }
 
       try {
+        if (mounted) {
+          setIsRoomInfoLoading(true);
+        }
+
         const [info, count, history] = await Promise.all([
           getChatRoomInfo(symbol),
           getChatRoomCount(symbol),
@@ -165,6 +171,10 @@ function ChatPage() {
         }
 
         applyFallbackState(symbol);
+      } finally {
+        if (mounted) {
+          setIsRoomInfoLoading(false);
+        }
       }
     };
 
@@ -230,8 +240,16 @@ function ChatPage() {
       <section className="mx-auto flex min-h-screen w-full max-w-300 flex-col bg-white md:min-h-dvh">
         <div className="flex min-h-screen flex-1 flex-col bg-white">
           <ChatHeader
-            title={roomInfo.name}
-            subtitle={`${roomInfo.market} ${roomInfo.symbol}`}
+            title={
+              isRoomInfoLoading ? (
+                <Loading size={18} color="var(--color-grey-300)" />
+              ) : (
+                roomInfo.name || symbol
+              )
+            }
+            subtitle={
+              isRoomInfoLoading ? '' : `${roomInfo.market} ${roomInfo.symbol}`
+            }
             statusLabel={isConnected ? '실시간 채팅' : '채팅 연결 중'}
             audienceLabel={`${audienceCount}명 접속중`}
             onBack={() => navigate(-1)}

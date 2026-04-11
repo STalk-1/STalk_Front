@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react';
+
 type ChatHeaderProps = {
-  title: string;
+  title: ReactNode;
   subtitle: string;
   statusLabel: string;
   audienceLabel: string;
