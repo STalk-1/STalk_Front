@@ -16,7 +16,9 @@ import type { ChatMessagePayload } from '@/types/chat';
 
 const EMPTY_MESSAGES: ChatMessage[] = [];
 
-const getChatMessageFromPayload = (payload: ChatMessagePayload): ChatMessage => ({
+const getChatMessageFromPayload = (
+  payload: ChatMessagePayload
+): ChatMessage => ({
   id: payload.messageId,
   sender: 'sender',
   text: payload.content,
@@ -26,7 +28,7 @@ const getChatMessageFromPayload = (payload: ChatMessagePayload): ChatMessage => 
 
 const getFallbackChatRoom = (symbol: string) => ({
   symbol,
-  name: symbol,
+  name: '',
   market: '',
   count: 0,
 });
@@ -172,6 +174,39 @@ function ChatPage() {
       mounted = false;
     };
   }, [symbol]);
+
+  useEffect(() => {
+    let mounted = true;
+    let timeoutId: number | undefined;
+
+    const refreshChatRoomCount = async () => {
+      if (!symbol || !isConnected) {
+        return;
+      }
+
+      try {
+        const count = await getChatRoomCount(symbol);
+        if (!mounted) {
+          return;
+        }
+
+        setAudienceCount(count.count);
+      } catch {
+        // count 갱신 실패 시 무시
+      }
+    };
+
+    if (symbol && isConnected) {
+      timeoutId = window.setTimeout(refreshChatRoomCount, 500);
+    }
+
+    return () => {
+      mounted = false;
+      if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, [symbol, isConnected]);
 
   const handleSend = () => {
     const trimmed = input.trim();
